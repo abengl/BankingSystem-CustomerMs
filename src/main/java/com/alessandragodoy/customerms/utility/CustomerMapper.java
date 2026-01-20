@@ -15,7 +15,7 @@ public class CustomerMapper {
 				customer.getCustomerId(),
 				customer.getFirstName(),
 				customer.getLastName(),
-				customer.getDni(),
+				customer.getDocumentNumber(),
 				customer.getEmail()
 		);
 	}
@@ -25,7 +25,7 @@ public class CustomerMapper {
 				.customerId(customerDTO.customerId())
 				.firstName(customerDTO.firstName())
 				.lastName(customerDTO.lastName())
-				.dni(customerDTO.dni())
+				.documentNumber(customerDTO.dni())
 				.email(customerDTO.email())
 				.build();
 	}
@@ -34,7 +34,7 @@ public class CustomerMapper {
 		return Customer.builder()
 				.firstName(customerDTO.firstName())
 				.lastName(customerDTO.lastName())
-				.dni(customerDTO.dni())
+				.documentNumber(customerDTO.dni())
 				.email(customerDTO.email())
 				.build();
 	}

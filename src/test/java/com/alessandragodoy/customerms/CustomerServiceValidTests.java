@@ -35,13 +35,13 @@ class CustomerServiceValidTests {
 	public void setUp() {
 		customers.add(Customer.builder()
 				.customerId(1).firstName("Jose").lastName("Gomez")
-				.dni("12345678").email("jose.gomez@mail.com").build());
+				.documentNumber("12345678").email("jose.gomez@mail.com").phoneNumber("963852741").address("Lima, Perú").build());
 		customers.add(Customer.builder()
 				.customerId(2).firstName("Maria").lastName("Perez")
-				.dni("87654321").email("maria.perze@mail.com").build());
+				.documentNumber("87654321").email("maria.perze@mail.com").phoneNumber("963852741").address("Lima, Perú").build());
 		customers.add(Customer.builder()
 				.customerId(3).firstName("Juan").lastName("Lopez")
-				.dni("45678912").email("juan.lopez@mail.com").build()
+				.documentNumber("45678912").email("juan.lopez@mail.com").phoneNumber("963852741").address("Lima, Perú").build()
 		);
 	}
 
@@ -98,7 +98,7 @@ class CustomerServiceValidTests {
 		Customer existingCustomer = customers.get(0);
 		Customer customerUpdated = Customer.builder()
 				.firstName("Jose").lastName("Gomez")
-				.dni("88888888").email("jose.gomez@mail.com").build();
+				.documentNumber("88888888").email("jose.gomez@mail.com").build();
 		when(customerRepository.findByDni(customerDTORequest.dni())).thenReturn(Optional.empty());
 		when(customerRepository.findById(customerId)).thenReturn(Optional.ofNullable(existingCustomer));
 		when(customerRepository.save(any(Customer.class))).thenReturn(customerUpdated);
@@ -121,7 +121,8 @@ class CustomerServiceValidTests {
 		CustomerDTO customerDTORequest =
 				new CustomerDTO(4, "Ale", "Luna", "96385296", "ale.luna@mail.com");
 		Customer newCustomer =
-				Customer.builder().customerId(4).firstName("Ale").lastName("Luna").dni("96385296").email("ale" +
+				Customer.builder().customerId(4).firstName("Ale").lastName("Luna").documentNumber(
+						"96385296").email("ale" +
 						".luna@mail.com").build();
 		when(customerRepository.findByDni(customerDTORequest.dni())).thenReturn(Optional.empty());
 		when(customerRepository.save(any(Customer.class))).thenReturn(newCustomer);

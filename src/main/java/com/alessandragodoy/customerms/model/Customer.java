@@ -3,32 +3,61 @@ package com.alessandragodoy.customerms.model;
 import jakarta.persistence.*;
 import lombok.*;
 
-import javax.validation.constraints.NotNull;
+import java.time.LocalDateTime;
 
 /**
  * Entity class representing a Customer.
  */
 @Entity
-@Table(name = "customer")
-@Getter
-@Setter
+@Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Customer {
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "customer_id")
+	@EqualsAndHashCode.Include
 	private Integer customerId;
-	@NotNull
-	@Column(name = "first_name")
+
+	@Column(nullable = false, length = 30)
 	private String firstName;
-	@NotNull
-	@Column(name = "last_name")
+
+	@Column(nullable = false, length = 30)
 	private String lastName;
-	@NotNull
-	@Column(unique = true)
-	private String dni;
-	@NotNull
+
+	@Column(nullable = false, unique = true, length = 15)
+	private String documentNumber;
+
+	@Column(nullable = false, length = 50)
 	private String email;
+
+	@Column(nullable = false, length = 12)
+	private String phoneNumber;
+
+	@Column(nullable = false, length = 150)
+	private String address;
+
+	@Column(nullable = false, updatable = false)
+	private LocalDateTime creationDate;
+
+	@Column(nullable = false)
+	private LocalDateTime updateDate;
+
+	@Column(nullable = false)
+	private boolean active;
+
+	@PrePersist
+	protected void onCreate() {
+		creationDate = LocalDateTime.now();
+		updateDate = LocalDateTime.now();
+		active = true;
+	}
+
+	@PreUpdate
+	protected void onUpdate() {
+		updateDate = LocalDateTime.now();
+	}
+
 }

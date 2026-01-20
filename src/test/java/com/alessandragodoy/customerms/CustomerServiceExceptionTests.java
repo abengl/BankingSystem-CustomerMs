@@ -42,13 +42,13 @@ class CustomerServiceExceptionTests {
 	public void setUp() {
 		customers.add(Customer.builder()
 				.customerId(1).firstName("Jose").lastName("Gomez")
-				.dni("12345678").email("jose.gomez@mail.com").build());
+				.documentNumber("12345678").email("jose.gomez@mail.com").build());
 		customers.add(Customer.builder()
 				.customerId(2).firstName("Maria").lastName("Perez")
-				.dni("87654321").email("maria.perze@mail.com").build());
+				.documentNumber("87654321").email("maria.perze@mail.com").build());
 		customers.add(Customer.builder()
 				.customerId(3).firstName("Juan").lastName("Lopez")
-				.dni("45678912").email("juan.lopez@mail.com").build()
+				.documentNumber("45678912").email("juan.lopez@mail.com").build()
 		);
 	}
 
