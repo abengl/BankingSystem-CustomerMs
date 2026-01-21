@@ -1,7 +1,9 @@
 package com.alessandragodoy.customerms.controller;
 
 import com.alessandragodoy.customerms.controller.dto.CustomerDTO;
-import com.alessandragodoy.customerms.service.CustomerService;
+import com.alessandragodoy.customerms.model.Customer;
+import com.alessandragodoy.customerms.service.ICustomerService;
+import com.alessandragodoy.customerms.utility.DTOMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -12,6 +14,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+import static com.alessandragodoy.customerms.utility.DTOMapper.convertToDTO;
+import static com.alessandragodoy.customerms.utility.DTOMapper.convertToEntity;
+
 /**
  * REST controller for managing customers.
  * Provides endpoints for CRUD operations on customers.
@@ -21,7 +26,8 @@ import java.util.List;
 @RequestMapping("/api/v1/customers")
 @Tag(name = "Customers", description = "Controller for Customer")
 public class CustomerController {
-	private final CustomerService customerService;
+
+	private final ICustomerService customerService;
 
 	/**
 	 * Retrieves a list of all customers.
@@ -30,9 +36,10 @@ public class CustomerController {
 	 */
 	@Operation(summary = "Retrieve all customers", description = "Returns a list of CustomerDTO")
 	@GetMapping
-	public ResponseEntity<List<CustomerDTO>> getAllCustomers() {
+	public ResponseEntity<List<CustomerDTO>> getAllCustomers() throws Exception {
 
-		List<CustomerDTO> customers = customerService.getAllCustomers();
+		List<CustomerDTO> customers =
+				customerService.getAllCustomers().stream().map(DTOMapper::convertToDTO).toList();
 		return ResponseEntity.ok(customers);
 
 	}
@@ -45,10 +52,12 @@ public class CustomerController {
 	 */
 	@Operation(summary = "Retrieve a customer by its id", description = "Returns the customer found as a CustomerDTO")
 	@GetMapping("/{customerId}")
-	public ResponseEntity<CustomerDTO> getCustomerById(@PathVariable Integer customerId) {
+	public ResponseEntity<CustomerDTO> getCustomerById(@PathVariable Integer customerId)
+			throws Exception {
 
-		CustomerDTO customer = customerService.getCustomerById(customerId);
-		return ResponseEntity.ok(customer);
+		Customer customer = customerService.getCustomerById(customerId);
+
+		return ResponseEntity.ok(convertToDTO(customer));
 
 	}
 
@@ -63,10 +72,13 @@ public class CustomerController {
 			"CustomerDTO")
 	@PutMapping("/{customerId}")
 	public ResponseEntity<CustomerDTO> updateCustomer(@PathVariable Integer customerId,
-													  @Valid @RequestBody CustomerDTO customerDTO) {
+													  @Valid @RequestBody CustomerDTO customerDTO)
+			throws Exception {
 
-		CustomerDTO updatedCustomer = customerService.updateCustomerById(customerId, customerDTO);
-		return ResponseEntity.ok(updatedCustomer);
+		Customer updatedCustomer = customerService.updateCustomerById(customerId,
+				convertToEntity(customerDTO));
+
+		return ResponseEntity.ok(convertToDTO(updatedCustomer));
 
 	}
 
@@ -79,25 +91,26 @@ public class CustomerController {
 	@Operation(summary = "Creates a customer with specific data", description = "Returns the customer created as a " +
 			"CustomerDTO")
 	@PostMapping
-	public ResponseEntity<CustomerDTO> createCustomer(@Valid @RequestBody CustomerDTO customerDTO) {
+	public ResponseEntity<CustomerDTO> createCustomer(@Valid @RequestBody CustomerDTO customerDTO)
+			throws Exception {
 
-		CustomerDTO customer = customerService.createCustomer(customerDTO);
-		return ResponseEntity.status(HttpStatus.CREATED).body(customer);
+		Customer customer = customerService.createCustomer(convertToEntity(customerDTO));
+		return ResponseEntity.status(HttpStatus.CREATED).body(convertToDTO(customer));
 
 	}
 
 	/**
 	 * Deletes a customer by their ID.
 	 *
-	 * @param id the ID of the customer to be deleted
-	 * @return ResponseEntity containing the deleted customer data
+	 * @param customerId the ID of the customer to be deleted
+	 * @return ResponseEntity&lt;Void&gt; indicating the result of the deletion operation
 	 */
 	@Operation(summary = "Deletes a customer by its id", description = "Returns the customer deleted as a CustomerDTO")
-	@DeleteMapping("/{id}")
-	public ResponseEntity<CustomerDTO> deleteCustomer(@PathVariable Integer id) {
+	@DeleteMapping("/{customerId}")
+	public ResponseEntity<Void> deleteCustomer(@PathVariable Integer customerId) throws Exception {
 
-		CustomerDTO deletedCustomer = customerService.deleteCustomerById(id);
-		return ResponseEntity.ok(deletedCustomer);
+		customerService.deleteCustomerById(customerId);
+		return ResponseEntity.noContent().build();
 
 	}
 
@@ -108,10 +121,25 @@ public class CustomerController {
 	 * @return true if the customer exists, false otherwise
 	 */
 	@Operation(summary = "Verify is a customer exists by its id", description = "Returns a boolean")
-	@GetMapping("/account/{customerId}")
-	public boolean customerExists(@PathVariable Integer customerId) {
+	@GetMapping("/exits/{customerId}")
+	public boolean customerExists(@PathVariable Integer customerId) throws Exception {
 
 		return customerService.customerExists(customerId);
+
+	}
+
+	/**
+	 * Checks if a customer is active by their ID.
+	 *
+	 * @param customerId the ID of the customer to check
+	 * @return true if the customer is active, false otherwise
+	 */
+	@Operation(summary = "Verify is a customer is active by its id", description = "Returns a " +
+			"boolean")
+	@GetMapping("/active/{customerId}")
+	public boolean customerActive(@PathVariable Integer customerId) throws Exception {
+
+		return customerService.customerIsActive(customerId);
 
 	}
 }
