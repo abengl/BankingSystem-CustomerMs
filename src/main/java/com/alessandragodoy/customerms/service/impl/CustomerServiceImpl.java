@@ -87,7 +87,7 @@ public class CustomerServiceImpl implements CustomerService {
 	}
 
 	private void checkDniUniqueness(String dni, Integer customerId) {
-		Optional<Customer> customerOptional = customerRepository.findByDni(dni);
+		Optional<Customer> customerOptional = customerRepository.findByDocumentNumber(dni);
 		customerOptional.ifPresent(customer -> {
 			if (!customer.getCustomerId().equals(customerId)) {
 				throw new CustomerValidationException("DNI number is already registered.");

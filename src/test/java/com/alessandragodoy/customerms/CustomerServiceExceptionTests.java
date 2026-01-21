@@ -72,7 +72,7 @@ class CustomerServiceExceptionTests {
 		int customerId = 100;
 		CustomerDTO customerDTORequest =
 				new CustomerDTO(customerId, "Ana", "Lopez", "00000000", "alopez@mail.com");
-		when(customerRepository.findByDni(customerDTORequest.dni())).thenReturn(Optional.empty());
+		when(customerRepository.findByDocumentNumber(customerDTORequest.dni())).thenReturn(Optional.empty());
 		when(customerRepository.findById(customerId)).thenReturn(Optional.empty());
 
 		// Act & Assert
@@ -126,7 +126,7 @@ class CustomerServiceExceptionTests {
 		// Arrange
 		CustomerDTO customerDTORequest =
 				new CustomerDTO(4, "Ale", "Luna", "12345678", "aluna@email.com");
-		when(customerRepository.findByDni(customerDTORequest.dni())).thenReturn(Optional.ofNullable(customers.get(0)));
+		when(customerRepository.findByDocumentNumber(customerDTORequest.dni())).thenReturn(Optional.ofNullable(customers.get(0)));
 		// Act & Assert
 		CustomerValidationException exception = assertThrows(CustomerValidationException.class,
 				() -> customerService.createCustomer(customerDTORequest));

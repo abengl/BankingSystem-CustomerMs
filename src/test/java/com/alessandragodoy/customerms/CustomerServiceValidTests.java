@@ -99,7 +99,7 @@ class CustomerServiceValidTests {
 		Customer customerUpdated = Customer.builder()
 				.firstName("Jose").lastName("Gomez")
 				.documentNumber("88888888").email("jose.gomez@mail.com").build();
-		when(customerRepository.findByDni(customerDTORequest.dni())).thenReturn(Optional.empty());
+		when(customerRepository.findByDocumentNumber(customerDTORequest.dni())).thenReturn(Optional.empty());
 		when(customerRepository.findById(customerId)).thenReturn(Optional.ofNullable(existingCustomer));
 		when(customerRepository.save(any(Customer.class))).thenReturn(customerUpdated);
 
@@ -109,7 +109,7 @@ class CustomerServiceValidTests {
 		// Assert
 		assertNotNull(customerDTO);
 		assertEquals("88888888", customerDTO.dni());
-		verify(customerRepository, times(1)).findByDni(customerDTORequest.dni());
+		verify(customerRepository, times(1)).findByDocumentNumber(customerDTORequest.dni());
 		verify(customerRepository, times(1)).findById(customerId);
 		verify(customerRepository, times(1)).save(any(Customer.class));
 	}
@@ -124,7 +124,7 @@ class CustomerServiceValidTests {
 				Customer.builder().customerId(4).firstName("Ale").lastName("Luna").documentNumber(
 						"96385296").email("ale" +
 						".luna@mail.com").build();
-		when(customerRepository.findByDni(customerDTORequest.dni())).thenReturn(Optional.empty());
+		when(customerRepository.findByDocumentNumber(customerDTORequest.dni())).thenReturn(Optional.empty());
 		when(customerRepository.save(any(Customer.class))).thenReturn(newCustomer);
 
 		// Act
@@ -133,7 +133,7 @@ class CustomerServiceValidTests {
 		// Assert
 		assertNotNull(customerDTO);
 		assertEquals("96385296", customerDTO.dni());
-		verify(customerRepository, times(1)).findByDni(customerDTORequest.dni());
+		verify(customerRepository, times(1)).findByDocumentNumber(customerDTORequest.dni());
 		verify(customerRepository, times(1)).save(any(Customer.class));
 	}
 
