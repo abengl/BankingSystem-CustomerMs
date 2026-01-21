@@ -1,13 +1,11 @@
 package com.alessandragodoy.customerms.service.impl;
 
 import com.alessandragodoy.customerms.adapter.CustomerAdapter;
-import com.alessandragodoy.customerms.controller.dto.CustomerDTO;
-import com.alessandragodoy.customerms.utility.CustomerMapper;
 import com.alessandragodoy.customerms.exception.AccountsNotFoundException;
 import com.alessandragodoy.customerms.exception.CustomerValidationException;
 import com.alessandragodoy.customerms.model.Customer;
 import com.alessandragodoy.customerms.repository.CustomerRepository;
-import com.alessandragodoy.customerms.service.CustomerService;
+import com.alessandragodoy.customerms.service.ICustomerService;
 import com.alessandragodoy.customerms.utility.CustomerValidationUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -21,68 +19,81 @@ import java.util.Optional;
  */
 @Service
 @RequiredArgsConstructor
-public class CustomerServiceImpl implements CustomerService {
+public class CustomerServiceImpl implements ICustomerService {
 
 	private final CustomerRepository customerRepository;
 	private final CustomerAdapter customerAdapter;
 
 	/* Customer MS CRUD methods */
 	@Override
-	public List<CustomerDTO> getAllCustomers() {
-		return customerRepository.findAll().stream().map(CustomerMapper::toDTO).toList();
+	public List<Customer> getAllCustomers() throws Exception {
+
+		return customerRepository.findAll();
 	}
 
 	@Override
-	public CustomerDTO getCustomerById(Integer customerId) {
-		return customerRepository.findById(customerId).map(CustomerMapper::toDTO)
+	public Customer getCustomerById(Integer customerId) throws Exception {
+
+		return customerRepository.findById(customerId)
 				.orElseThrow(() -> new AccountsNotFoundException("Customer not found"));
 	}
 
 	@Override
-	public CustomerDTO updateCustomerById(Integer customerId, CustomerDTO customerDTO) {
-		validateCustomerData(customerDTO);
-		return customerRepository.findById(customerId).map(existingCustomer -> {
-			Customer updatedCustomer = CustomerMapper.toEntity(customerDTO);
-			customerRepository.save(updatedCustomer);
-			return CustomerMapper.toDTO(updatedCustomer);
-		}).orElseThrow(() -> new AccountsNotFoundException("Customer not found"));
+	public Customer updateCustomerById(Integer customerId, Customer customer) throws Exception {
+
+		validateCustomerData(customer);
+		customer.setCustomerId(customerId);
+
+		customerRepository.findById(customerId)
+				.orElseThrow(() -> new AccountsNotFoundException("Customer not found"));
+
+		return customerRepository.save(customer);
 	}
 
 	@Override
-	public CustomerDTO createCustomer(CustomerDTO customerDTO) {
-		validateCustomerData(customerDTO);
-		Customer customer = CustomerMapper.dtoCreateToEntity(customerDTO);
-		customerRepository.save(customer);
-		return CustomerMapper.toDTO(customer);
+	public Customer createCustomer(Customer customer) throws Exception {
+
+		validateCustomerData(customer);
+
+		return customerRepository.save(customer);
 	}
 
 	@Override
-	public CustomerDTO deleteCustomerById(Integer customerId) {
+	public void deleteCustomerById(Integer customerId) throws Exception{
+
+		Customer updatedCustomer =
+				customerRepository.findById(customerId).orElseThrow(() -> new AccountsNotFoundException("Customer not found"));
+
 		if (customerAdapter.customerHasAccounts(customerId)) {
 			throw new CustomerValidationException("Customer has accounts and cannot be deleted.");
 		}
-		return customerRepository.findById(customerId).map(existingCustomer -> {
-			customerRepository.delete(existingCustomer);
-			return CustomerMapper.toDTO(existingCustomer);
-		}).orElseThrow(() -> new AccountsNotFoundException("Customer not found"));
+		updatedCustomer.setActive(false);
+		customerRepository.save(updatedCustomer);
 	}
 
 	@Override
-	public boolean customerExists(Integer customerId) {
+	public boolean customerExists(Integer customerId) throws Exception {
 		return customerRepository.existsById(customerId);
 	}
 
+	@Override
+	public boolean customerIsActive(Integer customerId) throws Exception {
+		return customerRepository.findById(customerId)
+				.map(Customer::isActive)
+				.orElse(false);
+	}
+
 	/* Helper methods */
-	private void validateCustomerData(CustomerDTO customerDTO) {
+	private void validateCustomerData(Customer customer) {
 		CustomerValidationUtils.checkRequiredFields(
-				customerDTO.firstName(),
-				customerDTO.lastName(),
-				customerDTO.dni(),
-				customerDTO.email()
+				customer.getFirstName(),
+				customer.getLastName(),
+				customer.getDocumentNumber(),
+				customer.getEmail()
 		);
-		CustomerValidationUtils.checkDniFormat(customerDTO.dni());
-		CustomerValidationUtils.checkEmailFormat(customerDTO.email());
-		checkDniUniqueness(customerDTO.dni(), customerDTO.customerId());
+		CustomerValidationUtils.checkDniFormat(customer.getDocumentNumber());
+		CustomerValidationUtils.checkEmailFormat(customer.getEmail());
+		checkDniUniqueness(customer.getDocumentNumber(), customer.getCustomerId());
 
 	}
 
