@@ -6,12 +6,10 @@ import com.alessandragodoy.customerms.exception.CustomerValidationException;
 import com.alessandragodoy.customerms.model.Customer;
 import com.alessandragodoy.customerms.repository.CustomerRepository;
 import com.alessandragodoy.customerms.service.ICustomerService;
-import com.alessandragodoy.customerms.utility.CustomerValidationUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 /**
  * Implementation of the CustomerService interface.
@@ -41,34 +39,44 @@ public class CustomerServiceImpl implements ICustomerService {
 	@Override
 	public Customer updateCustomerById(Integer customerId, Customer customer) throws Exception {
 
-		validateCustomerData(customer);
-		customer.setCustomerId(customerId);
+		Customer existingCustomer =
+				customerRepository.findById(customerId)
+						.orElseThrow(() -> new AccountsNotFoundException("Customer not found"));
+//		validateCustomerData(customer);
+//		customer.setCustomerId(customerId);
+		if (!customer.getEmail().isBlank()) {
+			existingCustomer.setEmail(customer.getEmail());
+		}
+		if (!customer.getPhoneNumber().isBlank()) {
+			existingCustomer.setPhoneNumber(customer.getPhoneNumber());
+		}
+		if (!customer.getAddress().isBlank()) {
+			existingCustomer.setAddress(customer.getAddress());
+		}
 
-		customerRepository.findById(customerId)
-				.orElseThrow(() -> new AccountsNotFoundException("Customer not found"));
-
-		return customerRepository.save(customer);
+		return customerRepository.save(existingCustomer);
 	}
 
 	@Override
 	public Customer createCustomer(Customer customer) throws Exception {
 
-		validateCustomerData(customer);
-
 		return customerRepository.save(customer);
+
 	}
 
 	@Override
-	public void deleteCustomerById(Integer customerId) throws Exception{
+	public void deleteCustomerById(Integer customerId) throws Exception {
 
-		Customer updatedCustomer =
-				customerRepository.findById(customerId).orElseThrow(() -> new AccountsNotFoundException("Customer not found"));
+		Customer deactivatedCustomer =
+				customerRepository.findById(customerId)
+						.orElseThrow(() -> new AccountsNotFoundException("Customer not found"));
 
 		if (customerAdapter.customerHasAccounts(customerId)) {
 			throw new CustomerValidationException("Customer has accounts and cannot be deleted.");
 		}
-		updatedCustomer.setActive(false);
-		customerRepository.save(updatedCustomer);
+
+		deactivatedCustomer.setActive(false);
+		customerRepository.save(deactivatedCustomer);
 	}
 
 	@Override
@@ -83,27 +91,5 @@ public class CustomerServiceImpl implements ICustomerService {
 				.orElse(false);
 	}
 
-	/* Helper methods */
-	private void validateCustomerData(Customer customer) {
-		CustomerValidationUtils.checkRequiredFields(
-				customer.getFirstName(),
-				customer.getLastName(),
-				customer.getDocumentNumber(),
-				customer.getEmail()
-		);
-		CustomerValidationUtils.checkDniFormat(customer.getDocumentNumber());
-		CustomerValidationUtils.checkEmailFormat(customer.getEmail());
-		checkDniUniqueness(customer.getDocumentNumber(), customer.getCustomerId());
-
-	}
-
-	private void checkDniUniqueness(String dni, Integer customerId) {
-		Optional<Customer> customerOptional = customerRepository.findByDocumentNumber(dni);
-		customerOptional.ifPresent(customer -> {
-			if (!customer.getCustomerId().equals(customerId)) {
-				throw new CustomerValidationException("DNI number is already registered.");
-			}
-		});
-	}
 }
 

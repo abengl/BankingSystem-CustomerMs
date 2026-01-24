@@ -1,9 +1,9 @@
 package com.alessandragodoy.customerms.controller;
 
 import com.alessandragodoy.customerms.controller.dto.CustomerDTO;
+import com.alessandragodoy.customerms.controller.dto.UpdateCustomerDTO;
 import com.alessandragodoy.customerms.model.Customer;
 import com.alessandragodoy.customerms.service.ICustomerService;
-import com.alessandragodoy.customerms.utility.DTOMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -39,7 +39,9 @@ public class CustomerController {
 	public ResponseEntity<List<CustomerDTO>> getAllCustomers() throws Exception {
 
 		List<CustomerDTO> customers =
-				customerService.getAllCustomers().stream().map(DTOMapper::convertToDTO).toList();
+				customerService.getAllCustomers().stream().map(customer -> convertToDTO(customer,
+						CustomerDTO.class
+						)).toList();
 		return ResponseEntity.ok(customers);
 
 	}
@@ -57,7 +59,7 @@ public class CustomerController {
 
 		Customer customer = customerService.getCustomerById(customerId);
 
-		return ResponseEntity.ok(convertToDTO(customer));
+		return ResponseEntity.ok(convertToDTO(customer, CustomerDTO.class));
 
 	}
 
@@ -65,20 +67,20 @@ public class CustomerController {
 	 * Updates an existing customer by their ID.
 	 *
 	 * @param customerId  the ID of the customer to be updated.
-	 * @param customerDTO the customer data transfer object containing the updated details of the customer.
+	 * @param updateCustomerDTO the customer data transfer object containing the updated details of the customer.
 	 * @return ResponseEntity containing the updated customer data.
 	 */
 	@Operation(summary = "Updates customer data", description = "Returns the customer with its data updated as a " +
 			"CustomerDTO")
-	@PutMapping("/{customerId}")
+	@PatchMapping("/{customerId}")
 	public ResponseEntity<CustomerDTO> updateCustomer(@PathVariable Integer customerId,
-													  @Valid @RequestBody CustomerDTO customerDTO)
+													  @Valid @RequestBody UpdateCustomerDTO updateCustomerDTO)
 			throws Exception {
 
 		Customer updatedCustomer = customerService.updateCustomerById(customerId,
-				convertToEntity(customerDTO));
+				convertToEntity(updateCustomerDTO, Customer.class));
 
-		return ResponseEntity.ok(convertToDTO(updatedCustomer));
+		return ResponseEntity.ok(convertToDTO(updatedCustomer, CustomerDTO.class));
 
 	}
 
@@ -94,8 +96,8 @@ public class CustomerController {
 	public ResponseEntity<CustomerDTO> createCustomer(@Valid @RequestBody CustomerDTO customerDTO)
 			throws Exception {
 
-		Customer customer = customerService.createCustomer(convertToEntity(customerDTO));
-		return ResponseEntity.status(HttpStatus.CREATED).body(convertToDTO(customer));
+		Customer customer = customerService.createCustomer(convertToEntity(customerDTO, Customer.class));
+		return ResponseEntity.status(HttpStatus.CREATED).body(convertToDTO(customer, CustomerDTO.class));
 
 	}
 

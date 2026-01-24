@@ -1,7 +1,5 @@
 package com.alessandragodoy.customerms.utility;
 
-import com.alessandragodoy.customerms.controller.dto.CustomerDTO;
-import com.alessandragodoy.customerms.model.Customer;
 import lombok.NoArgsConstructor;
 import org.modelmapper.ModelMapper;
 
@@ -14,22 +12,22 @@ public class DTOMapper {
 
 	private static final ModelMapper MAPPER = new ModelMapper();
 
-	public static CustomerDTO convertToDTO(Customer customer) {
-		return MAPPER.map(customer, CustomerDTO.class);
+	public static <D, E> D convertToDTO(E entity, Class<D> dtoClass) {
+		return MAPPER.map(entity, dtoClass);
 	}
 
-	public static Customer convertToEntity(CustomerDTO customerDTO) {
-		return MAPPER.map(customerDTO, Customer.class);
+	public static <E, D> E convertToEntity(D dto, Class<E> entityClass) {
+		return MAPPER.map(dto, entityClass);
 	}
 
-	public static Customer dtoCreateToEntity(CustomerDTO customerDTO) {
+/*	public static Customer dtoCreateToEntity(CustomerDTO customerDTO) {
 		return Customer.builder()
-				.firstName(customerDTO.firstName())
-				.lastName(customerDTO.lastName())
-				.documentNumber(customerDTO.documentNumber())
-				.email(customerDTO.email())
-				.phoneNumber(customerDTO.phoneNumber())
-				.address(customerDTO.address())
+				.firstName(customerDTO.getFirstName())
+				.lastName(customerDTO.getLastName())
+				.documentNumber(customerDTO.getDocumentNumber())
+				.email(customerDTO.getEmail())
+				.phoneNumber(customerDTO.getPhoneNumber())
+				.address(customerDTO.getAddress())
 				.build();
-	}
+	}*/
 }
