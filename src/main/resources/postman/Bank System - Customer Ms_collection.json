@@ -7,7 +7,7 @@
 	},
 	"item": [
 		{
-			"name": "customer - get all",
+			"name": "customer - get all active customers",
 			"event": [
 				{
 					"listen": "test",
@@ -72,7 +72,8 @@
 							"});"
 						],
 						"type": "text/javascript",
-						"packages": {}
+						"packages": {},
+						"requests": {}
 					}
 				}
 			],
@@ -80,66 +81,13 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "{{baseURLcustomers}}/customers/1",
+					"raw": "{{baseURLcustomers}}/customers/7",
 					"host": [
 						"{{baseURLcustomers}}"
 					],
 					"path": [
 						"customers",
-						"1"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "customer - update data",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Response status code is 200\", function () {",
-							"    pm.expect(pm.response.code).to.equal(200);",
-							"});",
-							"",
-							"pm.test(\"Response has the required fields\", function () {",
-							"    const responseData = pm.response.json();",
-							"    ",
-							"    pm.expect(responseData).to.be.an('object');",
-							"    pm.expect(responseData).to.have.property('customerId');",
-							"    pm.expect(responseData).to.have.property('firstName');",
-							"    pm.expect(responseData).to.have.property('lastName');",
-							"    pm.expect(responseData).to.have.property('dni');",
-							"    pm.expect(responseData).to.have.property('email');",
-							"});",
-							""
-						],
-						"type": "text/javascript",
-						"packages": {}
-					}
-				}
-			],
-			"request": {
-				"method": "PUT",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n    \"customerId\": 1,\n    \"firstName\": \"Julia\",\n    \"lastName\": \"Mendez\",\n    \"dni\": \"11111111\",\n    \"email\": \"jmendez@gmail.com\"\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "{{baseURLcustomers}}/customers/1",
-					"host": [
-						"{{baseURLcustomers}}"
-					],
-					"path": [
-						"customers",
-						"1"
+						"7"
 					]
 				}
 			},
@@ -169,7 +117,8 @@
 							""
 						],
 						"type": "text/javascript",
-						"packages": {}
+						"packages": {},
+						"requests": {}
 					}
 				}
 			],
@@ -178,7 +127,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"firstName\": \"Katty\",\n    \"lastName\": \"Perez\",\n    \"dni\": \"12345678\",\n    \"email\": \"kperez@mail.com\"\n}",
+					"raw": "{\n    \"firstName\": \"Katty\",\n    \"lastName\": \"Perez\",\n    \"documentNumber\": \"78945612\",\n    \"email\": \"kperez@mail.com\",\n    \"phoneNumber\": \"963963963\",\n    \"address\": \"Lima, Perú\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -198,6 +147,61 @@
 			"response": []
 		},
 		{
+			"name": "customer - update customer information",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response status code is 200\", function () {",
+							"    pm.expect(pm.response.code).to.equal(200);",
+							"});",
+							"",
+							"pm.test(\"Response has the required fields\", function () {",
+							"    const responseData = pm.response.json();",
+							"    ",
+							"    pm.expect(responseData).to.be.an('object');",
+							"    pm.expect(responseData).to.have.property('customerId');",
+							"    pm.expect(responseData).to.have.property('firstName');",
+							"    pm.expect(responseData).to.have.property('lastName');",
+							"    pm.expect(responseData).to.have.property('dni');",
+							"    pm.expect(responseData).to.have.property('email');",
+							"});",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"email\": \"jmendez@gmail.com\",\n    \"phoneNumber\": \"963852740\",\n    \"address\": \"Arequipa, Peru\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseURLcustomers}}/customers/update/1",
+					"host": [
+						"{{baseURLcustomers}}"
+					],
+					"path": [
+						"customers",
+						"update",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "customer - delete by customerId",
 			"event": [
 				{
@@ -210,7 +214,8 @@
 							""
 						],
 						"type": "text/javascript",
-						"packages": {}
+						"packages": {},
+						"requests": {}
 					}
 				}
 			],
@@ -218,32 +223,32 @@
 				"method": "DELETE",
 				"header": [],
 				"url": {
-					"raw": "{{baseURLcustomers}}/customers/6",
+					"raw": "{{baseURLcustomers}}/customers/8",
 					"host": [
 						"{{baseURLcustomers}}"
 					],
 					"path": [
 						"customers",
-						"6"
+						"8"
 					]
 				}
 			},
 			"response": []
 		},
 		{
-			"name": "customerMs - get by customerId (boolean)",
+			"name": "customerMs - customer exists by customerId",
 			"request": {
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "{{baseURLcustomers}}/customers/account/1",
+					"raw": "{{baseURLcustomers}}/customers/exists/7",
 					"host": [
 						"{{baseURLcustomers}}"
 					],
 					"path": [
 						"customers",
-						"account",
-						"1"
+						"exists",
+						"7"
 					]
 				}
 			},
