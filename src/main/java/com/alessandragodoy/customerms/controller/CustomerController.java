@@ -30,11 +30,13 @@ public class CustomerController {
 	private final ICustomerService customerService;
 
 	/**
-	 * Retrieves a list of all customers.
+	 * Retrieves a list of all active customers.
 	 *
-	 * @return ResponseEntity containing the list of all customers.
+	 * @return {@code ResponseEntity<List<CustomerDTO>>} containing the list of all customers.
+	 * @throws Exception if an error occurs during the retrieval process
 	 */
-	@Operation(summary = "Retrieve all customers", description = "Returns a list of CustomerDTO")
+	@Operation(summary = "Retrieve all active customers", description = "Returns a list of " +
+			"CustomerDTO")
 	@GetMapping
 	public ResponseEntity<List<CustomerDTO>> getAllCustomers() throws Exception {
 
@@ -50,9 +52,11 @@ public class CustomerController {
 	 * Retrieves a customer by their ID.
 	 *
 	 * @param customerId the ID of the customer to be retrieved.
-	 * @return ResponseEntity containing the customer data.
+	 * @return {@code ResponseEntity<CustomerDTO>} containing the customer data.
+	 * @throws Exception if an error occurs during the retrieval process
 	 */
-	@Operation(summary = "Retrieve a customer by its id", description = "Returns the customer found as a CustomerDTO")
+	@Operation(summary = "Retrieve a customer by its id", description = "Returns the customer " +
+			"found as a CustomerDTO")
 	@GetMapping("/{customerId}")
 	public ResponseEntity<CustomerDTO> getCustomerById(@PathVariable Integer customerId)
 			throws Exception {
@@ -69,10 +73,17 @@ public class CustomerController {
 	 * @param customerId  the ID of the customer to be updated.
 	 * @param updateCustomerDTO the customer data transfer object containing the updated details of the customer.
 	 * @return ResponseEntity containing the updated customer data.
+	 * @param customerId        the ID of the customer to be updated.
+	 * @param updateCustomerDTO the customer data transfer object with updated details.
+	 * @return {@code ResponseEntity<CustomerDTO>} containing the updated customer data.
+	 * @throws Exception if an error occurs during the update process
 	 */
 	@Operation(summary = "Updates customer data", description = "Returns the customer with its data updated as a " +
 			"CustomerDTO")
 	@PatchMapping("/{customerId}")
+	@Operation(summary = "Updates customer information", description = "Returns the customer " +
+			"with its data updated as a CustomerDTO")
+	@PatchMapping("/update/{customerId}")
 	public ResponseEntity<CustomerDTO> updateCustomer(@PathVariable Integer customerId,
 													  @Valid @RequestBody UpdateCustomerDTO updateCustomerDTO)
 			throws Exception {
@@ -89,11 +100,16 @@ public class CustomerController {
 	 *
 	 * @param customerDTO the customer data transfer object containing the details of the customer to be created.
 	 * @return ResponseEntity containing the created customer data.
+	 * @param customerId the ID of the customer to be deactivated
+	 * @return {@code ResponseEntity<CustomerDTO>} containing the deactivated customer data
+	 * @throws Exception if an error occurs during the deactivation process
 	 */
 	@Operation(summary = "Creates a customer with specific data", description = "Returns the customer created as a " +
 			"CustomerDTO")
 	@PostMapping
 	public ResponseEntity<CustomerDTO> createCustomer(@Valid @RequestBody CustomerDTO customerDTO)
+	@Operation(summary = "Deactivates a customer by its id", description =
+			"Returns the customer deactivated as a CustomerDTO")
 			throws Exception {
 
 		Customer customer = customerService.createCustomer(convertToEntity(customerDTO, Customer.class));
@@ -105,9 +121,11 @@ public class CustomerController {
 	 * Deletes a customer by their ID.
 	 *
 	 * @param customerId the ID of the customer to be deleted
-	 * @return ResponseEntity&lt;Void&gt; indicating the result of the deletion operation
+	 * @return {@code ResponseEntity<Void>} empty response after successful operation
+	 * @throws Exception if an error occurs during the deleting process
 	 */
-	@Operation(summary = "Deletes a customer by its id", description = "Returns the customer deleted as a CustomerDTO")
+	@Operation(summary = "Deletes a customer by its id", description =
+			"Returns empty response after successful operation")
 	@DeleteMapping("/{customerId}")
 	public ResponseEntity<Void> deleteCustomer(@PathVariable Integer customerId) throws Exception {
 
@@ -120,10 +138,13 @@ public class CustomerController {
 	 * Checks if a customer exists by their ID.
 	 *
 	 * @param customerId the ID of the customer to check
-	 * @return true if the customer exists, false otherwise
+	 * @return {@code boolean} true if the customer exists, false otherwise
+	 * @throws Exception if an error occurs during the existence check
 	 */
 	@Operation(summary = "Verify is a customer exists by its id", description = "Returns a boolean")
 	@GetMapping("/exits/{customerId}")
+	@Operation(summary = "Verify is a customer exists by its id", description = "Returns a " +
+			"boolean")
 	public boolean customerExists(@PathVariable Integer customerId) throws Exception {
 
 		return customerService.customerExists(customerId);
@@ -134,7 +155,8 @@ public class CustomerController {
 	 * Checks if a customer is active by their ID.
 	 *
 	 * @param customerId the ID of the customer to check
-	 * @return true if the customer is active, false otherwise
+	 * @return {@code boolean} true if the customer is active, false otherwise
+	 * @throws Exception if an error occurs during the active status check
 	 */
 	@Operation(summary = "Verify is a customer is active by its id", description = "Returns a " +
 			"boolean")
