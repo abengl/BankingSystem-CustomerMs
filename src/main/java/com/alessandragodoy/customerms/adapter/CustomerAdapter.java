@@ -9,5 +9,5 @@ package com.alessandragodoy.customerms.adapter;
  * tightly coupled to its implementation.</p>
  */
 public interface CustomerAdapter {
-	boolean customerHasAccounts(Integer customerId);
+	boolean customerHasActiveAccounts(Integer customerId);
 }

@@ -15,7 +15,7 @@ public class CustomerRestAdapter implements CustomerAdapter {
 	private final CustomerServiceClient customerServiceClient;
 
 	@Override
-	public boolean customerHasAccounts(Integer customerId) {
-		return customerServiceClient.customerHasAccounts(customerId);
+	public boolean customerHasActiveAccounts(Integer customerId) {
+		return customerServiceClient.customerHasActiveAccounts(customerId);
 	}
 }

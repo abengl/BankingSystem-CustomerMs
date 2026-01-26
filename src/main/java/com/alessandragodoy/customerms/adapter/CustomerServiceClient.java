@@ -22,7 +22,7 @@ public class CustomerServiceClient {
 		this.accountMsUrl = accountMsUrl;
 	}
 
-	public boolean customerHasAccounts(Integer customerId) {
+	public boolean customerHasActiveAccounts(Integer customerId) {
 		String url = UriComponentsBuilder.fromHttpUrl(accountMsUrl).pathSegment(customerId.toString()).toUriString();
 		try {
 			ResponseEntity<Boolean> response = restTemplate.getForEntity(url, Boolean.class);
