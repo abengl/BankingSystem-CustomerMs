@@ -24,7 +24,7 @@ public class DataLoader implements CommandLineRunner {
 	@Override
 	public void run(String... args) {
 		if (customerRepository.count() == 0) {
-			LOGGER.info("No customers found, creating initial customers...");
+			LOGGER.info("STARTING - No customers found, adding initial customers...");
 			List<Customer> initialCustomers =
 					List.of(Customer.builder().firstName("Julia").lastName("Mendez")
 									.documentNumber("11111111").email("jmendez@mail.com")
@@ -37,15 +37,21 @@ public class DataLoader implements CommandLineRunner {
 									.phoneNumber("863214569").address("Lima, Perú").build(),
 							Customer.builder().firstName("Carla").lastName("Gomez")
 									.documentNumber("44444444").email("cgomez@mail.com")
-									.phoneNumber("963963852").address("Lima, " + "Perú").build(),
+									.phoneNumber("963963852").address("Lima, Perú").build(),
 							Customer.builder().firstName("Juan").lastName("Perez")
 									.documentNumber("55555555").email("jperez@mail.com")
-									.phoneNumber("741874521").address("Lima, " + "Perú").build());
+									.phoneNumber("741874521").address("Lima, Perú").build(),
+							Customer.builder().firstName("Ana").lastName("Meza")
+									.documentNumber("66666666").email("ameza@mail.com")
+									.phoneNumber("852741963").address("Cajamarca, Peru").build(),
+							Customer.builder().firstName("Luis").lastName("Torres")
+									.documentNumber("77777777").email("ltorres@mail.com")
+									.phoneNumber("965793126").address("San Martin, Peru").build());
 
 			customerRepository.saveAll(initialCustomers);
-			LOGGER.info("Initial customers added to the database.");
+			LOGGER.info("COMPLETED - Customers added to the database.");
 		} else {
-			LOGGER.info("Customers already exist, skipping initialization.");
+			LOGGER.info("SKIPPED - Customers already exist, skipping initialization.");
 		}
 	}
 }
