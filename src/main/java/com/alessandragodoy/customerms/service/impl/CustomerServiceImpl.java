@@ -37,27 +37,6 @@ public class CustomerServiceImpl implements ICustomerService {
 	}
 
 	@Override
-	public Customer updateCustomerById(Integer customerId, Customer customer) throws Exception {
-
-		Customer existingCustomer =
-				customerRepository.findById(customerId)
-						.orElseThrow(() -> new AccountsNotFoundException("Customer not found"));
-//		validateCustomerData(customer);
-//		customer.setCustomerId(customerId);
-		if (!customer.getEmail().isBlank()) {
-			existingCustomer.setEmail(customer.getEmail());
-		}
-		if (!customer.getPhoneNumber().isBlank()) {
-			existingCustomer.setPhoneNumber(customer.getPhoneNumber());
-		}
-		if (!customer.getAddress().isBlank()) {
-			existingCustomer.setAddress(customer.getAddress());
-		}
-
-		return customerRepository.save(existingCustomer);
-	}
-
-	@Override
 	public Customer createCustomer(Customer customer) throws Exception {
 
 		return customerRepository.save(customer);
@@ -65,30 +44,77 @@ public class CustomerServiceImpl implements ICustomerService {
 	}
 
 	@Override
-	public void deleteCustomerById(Integer customerId) throws Exception {
+	public Customer updateCustomerById(Integer customerId, Customer customer) throws Exception {
+
+		Customer updatedCustomer =
+				customerRepository.findById(customerId)
+						.orElseThrow(() -> new AccountsNotFoundException("Customer not found"));
+
+		if (!customer.getEmail().isBlank()) {
+			updatedCustomer.setEmail(customer.getEmail());
+		}
+		if (!customer.getPhoneNumber().isBlank()) {
+			updatedCustomer.setPhoneNumber(customer.getPhoneNumber());
+		}
+		if (!customer.getAddress().isBlank()) {
+			updatedCustomer.setAddress(customer.getAddress());
+		}
+
+		return customerRepository.save(updatedCustomer);
+	}
+
+	@Override
+	public Customer activateCustomerById(Integer customerId) {
+
+		Customer activatedCustomer =
+				customerRepository.findById(customerId)
+						.orElseThrow(() -> new AccountsNotFoundException("Customer not found"));
+
+		activatedCustomer.setActive(true);
+
+		return customerRepository.save(activatedCustomer);
+	}
+
+	@Override
+	public Customer deactivateCustomerById(Integer customerId) {
 
 		Customer deactivatedCustomer =
 				customerRepository.findById(customerId)
 						.orElseThrow(() -> new AccountsNotFoundException("Customer not found"));
 
-		if (customerAdapter.customerHasAccounts(customerId)) {
+		if (customerAdapter.customerHasActiveAccounts(customerId)) {
 			throw new CustomerValidationException("Customer has accounts and cannot be deleted.");
 		}
 
 		deactivatedCustomer.setActive(false);
-		customerRepository.save(deactivatedCustomer);
+
+		return customerRepository.save(deactivatedCustomer);
+	}
+
+	@Override
+	public void deleteCustomerById(Integer customerId) throws Exception {
+
+		Customer deletedCustomer =
+				customerRepository.findById(customerId)
+						.orElseThrow(() -> new AccountsNotFoundException("Customer not found"));
+
+		if (customerAdapter.customerHasActiveAccounts(customerId)) {
+			throw new CustomerValidationException("Customer has accounts and cannot be deleted.");
+		}
+
+		customerRepository.delete(deletedCustomer);
 	}
 
 	@Override
 	public boolean customerExists(Integer customerId) throws Exception {
+
 		return customerRepository.existsById(customerId);
 	}
 
 	@Override
 	public boolean customerIsActive(Integer customerId) throws Exception {
-		return customerRepository.findById(customerId)
-				.map(Customer::isActive)
-				.orElse(false);
+
+		return customerRepository.existsByCustomerIdAndActiveTrue(customerId);
 	}
 
 }

@@ -67,7 +67,29 @@ public class CustomerController {
 	}
 
 	/**
-	 * Updates an existing customer by their ID.
+	 * Creates a new customer.
+	 *
+	 * @param customerDTO the customer data transfer object containing the details of the customer
+	 *                    to be created.
+	 * @return {@code ResponseEntity<CustomerDTO>} containing the created customer data.
+	 * @throws Exception if an error occurs during the creation process
+	 */
+	@Operation(summary = "Creates a customer with specific data", description = "Returns the " +
+			"customer created as a CustomerDTO")
+	@PostMapping
+	public ResponseEntity<CustomerDTO> createCustomer(@Valid @RequestBody CustomerDTO customerDTO)
+			throws Exception {
+
+		Customer customer =
+				customerService.createCustomer(convertToEntity(customerDTO, Customer.class));
+
+		return ResponseEntity.status(HttpStatus.CREATED)
+				.body(convertToDTO(customer, CustomerDTO.class));
+
+	}
+
+	/**
+	 * Updates an existing customer information by their ID.
 	 *
 	 * @param customerId        the ID of the customer to be updated.
 	 * @param updateCustomerDTO the customer data transfer object with updated details.
@@ -89,24 +111,40 @@ public class CustomerController {
 	}
 
 	/**
-	 * Creates a new customer.
+	 * Activates a customer by their ID.
 	 *
-	 * @param customerDTO the customer data transfer object containing the details of the customer to be created.
-	 * @return ResponseEntity containing the created customer data.
+	 * @param customerId the ID of the customer to be activated
+	 * @return {@code ResponseEntity<CustomerDTO>} containing the activated customer data
+	 * @throws Exception if an error occurs during the activation process
+	 */
+	@Operation(summary = "Activates a customer by its id", description =
+			"Returns the customer activated as a CustomerDTO")
+	@PatchMapping("/activate/{customerId}")
+	public ResponseEntity<CustomerDTO> activateCustomer(@PathVariable Integer customerId)
+			throws Exception {
+
+		Customer activatedCustomer = customerService.activateCustomerById(customerId);
+
+		return ResponseEntity.ok(convertToDTO(activatedCustomer, CustomerDTO.class));
+
+	}
+
+	/**
+	 * Deactivates a customer by their ID.
+	 *
 	 * @param customerId the ID of the customer to be deactivated
 	 * @return {@code ResponseEntity<CustomerDTO>} containing the deactivated customer data
 	 * @throws Exception if an error occurs during the deactivation process
 	 */
-	@Operation(summary = "Creates a customer with specific data", description = "Returns the customer created as a " +
-			"CustomerDTO")
-	@PostMapping
-	public ResponseEntity<CustomerDTO> createCustomer(@Valid @RequestBody CustomerDTO customerDTO)
 	@Operation(summary = "Deactivates a customer by its id", description =
 			"Returns the customer deactivated as a CustomerDTO")
+	@PatchMapping("/deactivate/{customerId}")
+	public ResponseEntity<CustomerDTO> deactivateCustomer(@PathVariable Integer customerId)
 			throws Exception {
 
-		Customer customer = customerService.createCustomer(convertToEntity(customerDTO, Customer.class));
-		return ResponseEntity.status(HttpStatus.CREATED).body(convertToDTO(customer, CustomerDTO.class));
+		Customer deactivatedCustomer = customerService.deactivateCustomerById(customerId);
+
+		return ResponseEntity.ok(convertToDTO(deactivatedCustomer, CustomerDTO.class));
 
 	}
 
@@ -123,6 +161,7 @@ public class CustomerController {
 	public ResponseEntity<Void> deleteCustomer(@PathVariable Integer customerId) throws Exception {
 
 		customerService.deleteCustomerById(customerId);
+
 		return ResponseEntity.noContent().build();
 
 	}

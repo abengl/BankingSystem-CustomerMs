@@ -48,12 +48,25 @@ public interface ICustomerService {
 	Customer updateCustomerById(Integer customerId, Customer customer) throws Exception;
 
 	/**
-	 * Creates a new customer.
+	 * Activates a customer by their ID.
 	 *
-	 * @param customer the customer data to create
-	 * @return the created CustomerDTO
+	 * @param customerId the ID of the customer to activate
+	 * @return {@code Customer} activated
+	 * @throws AccountsNotFoundException if the customer is not found
 	 */
-	Customer createCustomer(Customer customer) throws Exception;
+	Customer activateCustomerById(Integer customerId) throws Exception;
+
+	/**
+	 * Deactivates a customer by their ID.
+	 *
+	 * @param customerId the ID of the customer to deactivate
+	 * @return {@code Customer} deactivated
+	 * @throws AccountsNotFoundException   if the customer is not found
+	 * @throws CustomerValidationException if the customer has active accounts and cannot be
+	 * deactivated
+	 * @throws ExternalServiceException    if there is an error connecting to the account service
+	 */
+	Customer deactivateCustomerById(Integer customerId) throws Exception;
 
 	/**
 	 * Deletes a customer by their ID.
