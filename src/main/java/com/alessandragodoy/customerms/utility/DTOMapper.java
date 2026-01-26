@@ -20,14 +20,4 @@ public class DTOMapper {
 		return MAPPER.map(dto, entityClass);
 	}
 
-/*	public static Customer dtoCreateToEntity(CustomerDTO customerDTO) {
-		return Customer.builder()
-				.firstName(customerDTO.getFirstName())
-				.lastName(customerDTO.getLastName())
-				.documentNumber(customerDTO.getDocumentNumber())
-				.email(customerDTO.getEmail())
-				.phoneNumber(customerDTO.getPhoneNumber())
-				.address(customerDTO.getAddress())
-				.build();
-	}*/
 }
