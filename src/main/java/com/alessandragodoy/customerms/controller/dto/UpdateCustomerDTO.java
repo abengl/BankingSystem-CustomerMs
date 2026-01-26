@@ -9,6 +9,10 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * Data Transfer Object for updating Customer information.
+ * This class is used to transfer data for updating specific fields of a Customer.
+ */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
