@@ -13,9 +13,9 @@ import java.util.List;
  */
 public interface ICustomerService {
 	/**
-	 * Retrieves all customers.
+	 * Retrieves all active customers.
 	 *
-	 * @return a list of CustomerDTO objects
+	 * @return {@code List<Customer>} a list of active customers
 	 */
 	List<Customer> getAllActiveCustomers() throws Exception;
 
@@ -23,17 +23,26 @@ public interface ICustomerService {
 	 * Retrieves a customer by their ID.
 	 *
 	 * @param customerId the ID of the customer
-	 * @return the CustomerDTO if found
+	 * @return {@code Customer} if found
 	 * @throws AccountsNotFoundException if the customer is not found
 	 */
 	Customer getCustomerById(Integer customerId) throws Exception;
 
 	/**
-	 * Updates a customer by their ID.
+	 * Creates a new customer.
+	 *
+	 * @param customer the customer data to create
+	 * @return {@code Customer} created
+	 * @throws Exception if an error occurs during creation
+	 */
+	Customer createCustomer(Customer customer) throws Exception;
+
+	/**
+	 * Updates a customer information by their ID.
 	 *
 	 * @param customerId the ID of the customer
-	 * @param customer the customer data to update
-	 * @return the updated CustomerDTO if successful
+	 * @param customer   the customer data to update
+	 * @return {@code Customer} updated if successful
 	 * @throws AccountsNotFoundException if the customer is not found
 	 */
 	Customer updateCustomerById(Integer customerId, Customer customer) throws Exception;
@@ -60,9 +69,17 @@ public interface ICustomerService {
 	 * Checks if a customer exists by their ID.
 	 *
 	 * @param customerId the ID of the customer
-	 * @return true if the customer exists, false otherwise
+	 * @return {@code boolean}true if the customer exists, false otherwise
+	 * @throws Exception if an error occurs during the check
 	 */
 	boolean customerExists(Integer customerId) throws Exception;
 
+	/**
+	 * Checks if a customer is active by their ID.
+	 *
+	 * @param customerId the ID of the customer
+	 * @return {@code boolean} true if the customer is active, false otherwise
+	 * @throws Exception if an error occurs during the check
+	 */
 	boolean customerIsActive(Integer customerId) throws Exception;
 }
