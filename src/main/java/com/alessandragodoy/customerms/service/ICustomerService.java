@@ -17,7 +17,7 @@ public interface ICustomerService {
 	 *
 	 * @return a list of CustomerDTO objects
 	 */
-	List<Customer> getAllCustomers() throws Exception;
+	List<Customer> getAllActiveCustomers() throws Exception;
 
 	/**
 	 * Retrieves a customer by their ID.

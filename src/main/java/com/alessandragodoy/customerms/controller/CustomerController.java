@@ -40,10 +40,9 @@ public class CustomerController {
 	@GetMapping
 	public ResponseEntity<List<CustomerDTO>> getAllCustomers() throws Exception {
 
-		List<CustomerDTO> customers =
-				customerService.getAllCustomers().stream().map(customer -> convertToDTO(customer,
-						CustomerDTO.class
-						)).toList();
+		List<CustomerDTO> customers = customerService.getAllActiveCustomers().stream()
+				.map(customer -> convertToDTO(customer, CustomerDTO.class)).toList();
+
 		return ResponseEntity.ok(customers);
 
 	}
@@ -70,17 +69,11 @@ public class CustomerController {
 	/**
 	 * Updates an existing customer by their ID.
 	 *
-	 * @param customerId  the ID of the customer to be updated.
-	 * @param updateCustomerDTO the customer data transfer object containing the updated details of the customer.
-	 * @return ResponseEntity containing the updated customer data.
 	 * @param customerId        the ID of the customer to be updated.
 	 * @param updateCustomerDTO the customer data transfer object with updated details.
 	 * @return {@code ResponseEntity<CustomerDTO>} containing the updated customer data.
 	 * @throws Exception if an error occurs during the update process
 	 */
-	@Operation(summary = "Updates customer data", description = "Returns the customer with its data updated as a " +
-			"CustomerDTO")
-	@PatchMapping("/{customerId}")
 	@Operation(summary = "Updates customer information", description = "Returns the customer " +
 			"with its data updated as a CustomerDTO")
 	@PatchMapping("/update/{customerId}")
@@ -141,10 +134,9 @@ public class CustomerController {
 	 * @return {@code boolean} true if the customer exists, false otherwise
 	 * @throws Exception if an error occurs during the existence check
 	 */
-	@Operation(summary = "Verify is a customer exists by its id", description = "Returns a boolean")
-	@GetMapping("/exits/{customerId}")
 	@Operation(summary = "Verify is a customer exists by its id", description = "Returns a " +
 			"boolean")
+	@GetMapping("/exists/{customerId}")
 	public boolean customerExists(@PathVariable Integer customerId) throws Exception {
 
 		return customerService.customerExists(customerId);

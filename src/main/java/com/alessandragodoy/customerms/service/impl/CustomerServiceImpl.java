@@ -24,9 +24,9 @@ public class CustomerServiceImpl implements ICustomerService {
 
 	/* Customer MS CRUD methods */
 	@Override
-	public List<Customer> getAllCustomers() throws Exception {
+	public List<Customer> getAllActiveCustomers() throws Exception {
 
-		return customerRepository.findAll();
+		return customerRepository.findAllByActiveTrue();
 	}
 
 	@Override

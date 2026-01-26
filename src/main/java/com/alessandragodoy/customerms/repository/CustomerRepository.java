@@ -13,5 +13,10 @@ import java.util.Optional;
 @Repository
 public interface CustomerRepository extends JpaRepository<Customer, Integer> {
 
-	Optional<Customer> findByDocumentNumber(String dni);
+	/**
+	 * Retrieves a list of all active customers.
+	 *
+	 * @return {@code List<Customer>} a list of active customers.
+	 */
+	List<Customer> findAllByActiveTrue();
 }
