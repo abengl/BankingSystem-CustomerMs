@@ -1,6 +1,6 @@
 package com.alessandragodoy.customerms.service.impl;
 
-import com.alessandragodoy.customerms.adapter.CustomerAdapter;
+import com.alessandragodoy.customerms.adapter.AccountServiceClient;
 import com.alessandragodoy.customerms.exception.CustomerNotFoundException;
 import com.alessandragodoy.customerms.exception.CustomerValidationException;
 import com.alessandragodoy.customerms.model.Customer;
@@ -20,7 +20,7 @@ import java.util.List;
 public class CustomerServiceImpl implements ICustomerService {
 
 	private final CustomerRepository customerRepository;
-	private final CustomerAdapter customerAdapter;
+	private final AccountServiceClient accountServiceClient;
 
 	/* Customer MS CRUD methods */
 	@Override
@@ -82,7 +82,7 @@ public class CustomerServiceImpl implements ICustomerService {
 				customerRepository.findById(customerId)
 						.orElseThrow(() -> new CustomerNotFoundException("Customer not found"));
 
-		if (customerAdapter.customerHasActiveAccounts(customerId)) {
+		if (accountServiceClient.customerHasActiveAccounts(customerId)) {
 			throw new CustomerValidationException("Customer has accounts and cannot be deleted.");
 		}
 
@@ -98,7 +98,7 @@ public class CustomerServiceImpl implements ICustomerService {
 				customerRepository.findById(customerId)
 						.orElseThrow(() -> new CustomerNotFoundException("Customer not found"));
 
-		if (customerAdapter.customerHasActiveAccounts(customerId)) {
+		if (accountServiceClient.customerHasActiveAccounts(customerId)) {
 			throw new CustomerValidationException("Customer has accounts and cannot be deleted.");
 		}
 
