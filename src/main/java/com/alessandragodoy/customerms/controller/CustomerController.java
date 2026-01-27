@@ -176,7 +176,7 @@ public class CustomerController {
 	@Operation(summary = "Verify is a customer exists by its id", description = "Returns a " +
 			"boolean")
 	@GetMapping("/exists/{customerId}")
-	public boolean customerExists(@PathVariable Integer customerId) throws Exception {
+	public boolean customerExists(@PathVariable Integer customerId) {
 
 		return customerService.customerExists(customerId);
 
@@ -192,7 +192,7 @@ public class CustomerController {
 	@Operation(summary = "Verify is a customer is active by its id", description = "Returns a " +
 			"boolean")
 	@GetMapping("/active/{customerId}")
-	public boolean customerActive(@PathVariable Integer customerId) throws Exception {
+	public boolean customerActive(@PathVariable Integer customerId) {
 
 		return customerService.customerIsActive(customerId);
 

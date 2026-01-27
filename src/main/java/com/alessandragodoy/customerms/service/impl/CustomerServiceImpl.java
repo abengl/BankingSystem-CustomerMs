@@ -1,7 +1,7 @@
 package com.alessandragodoy.customerms.service.impl;
 
 import com.alessandragodoy.customerms.adapter.CustomerAdapter;
-import com.alessandragodoy.customerms.exception.AccountsNotFoundException;
+import com.alessandragodoy.customerms.exception.CustomerNotFoundException;
 import com.alessandragodoy.customerms.exception.CustomerValidationException;
 import com.alessandragodoy.customerms.model.Customer;
 import com.alessandragodoy.customerms.repository.CustomerRepository;
@@ -33,7 +33,7 @@ public class CustomerServiceImpl implements ICustomerService {
 	public Customer getCustomerById(Integer customerId) throws Exception {
 
 		return customerRepository.findById(customerId)
-				.orElseThrow(() -> new AccountsNotFoundException("Customer not found"));
+				.orElseThrow(() -> new CustomerNotFoundException("Customer not found"));
 	}
 
 	@Override
@@ -48,7 +48,7 @@ public class CustomerServiceImpl implements ICustomerService {
 
 		Customer updatedCustomer =
 				customerRepository.findById(customerId)
-						.orElseThrow(() -> new AccountsNotFoundException("Customer not found"));
+						.orElseThrow(() -> new CustomerNotFoundException("Customer not found"));
 
 		if (!customer.getEmail().isBlank()) {
 			updatedCustomer.setEmail(customer.getEmail());
@@ -68,7 +68,7 @@ public class CustomerServiceImpl implements ICustomerService {
 
 		Customer activatedCustomer =
 				customerRepository.findById(customerId)
-						.orElseThrow(() -> new AccountsNotFoundException("Customer not found"));
+						.orElseThrow(() -> new CustomerNotFoundException("Customer not found"));
 
 		activatedCustomer.setActive(true);
 
@@ -80,7 +80,7 @@ public class CustomerServiceImpl implements ICustomerService {
 
 		Customer deactivatedCustomer =
 				customerRepository.findById(customerId)
-						.orElseThrow(() -> new AccountsNotFoundException("Customer not found"));
+						.orElseThrow(() -> new CustomerNotFoundException("Customer not found"));
 
 		if (customerAdapter.customerHasActiveAccounts(customerId)) {
 			throw new CustomerValidationException("Customer has accounts and cannot be deleted.");
@@ -96,7 +96,7 @@ public class CustomerServiceImpl implements ICustomerService {
 
 		Customer deletedCustomer =
 				customerRepository.findById(customerId)
-						.orElseThrow(() -> new AccountsNotFoundException("Customer not found"));
+						.orElseThrow(() -> new CustomerNotFoundException("Customer not found"));
 
 		if (customerAdapter.customerHasActiveAccounts(customerId)) {
 			throw new CustomerValidationException("Customer has accounts and cannot be deleted.");
@@ -106,13 +106,13 @@ public class CustomerServiceImpl implements ICustomerService {
 	}
 
 	@Override
-	public boolean customerExists(Integer customerId) throws Exception {
+	public boolean customerExists(Integer customerId) {
 
 		return customerRepository.existsById(customerId);
 	}
 
 	@Override
-	public boolean customerIsActive(Integer customerId) throws Exception {
+	public boolean customerIsActive(Integer customerId) {
 
 		return customerRepository.existsByCustomerIdAndActiveTrue(customerId);
 	}

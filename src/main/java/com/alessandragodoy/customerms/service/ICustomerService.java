@@ -1,6 +1,6 @@
 package com.alessandragodoy.customerms.service;
 
-import com.alessandragodoy.customerms.exception.AccountsNotFoundException;
+import com.alessandragodoy.customerms.exception.CustomerNotFoundException;
 import com.alessandragodoy.customerms.exception.CustomerValidationException;
 import com.alessandragodoy.customerms.exception.ExternalServiceException;
 import com.alessandragodoy.customerms.model.Customer;
@@ -24,7 +24,7 @@ public interface ICustomerService {
 	 *
 	 * @param customerId the ID of the customer
 	 * @return {@code Customer} if found
-	 * @throws AccountsNotFoundException if the customer is not found
+	 * @throws CustomerNotFoundException if the customer is not found
 	 */
 	Customer getCustomerById(Integer customerId) throws Exception;
 
@@ -43,7 +43,7 @@ public interface ICustomerService {
 	 * @param customerId the ID of the customer
 	 * @param customer   the customer data to update
 	 * @return {@code Customer} updated if successful
-	 * @throws AccountsNotFoundException if the customer is not found
+	 * @throws CustomerNotFoundException if the customer is not found
 	 */
 	Customer updateCustomerById(Integer customerId, Customer customer) throws Exception;
 
@@ -52,7 +52,7 @@ public interface ICustomerService {
 	 *
 	 * @param customerId the ID of the customer to activate
 	 * @return {@code Customer} activated
-	 * @throws AccountsNotFoundException if the customer is not found
+	 * @throws CustomerNotFoundException if the customer is not found
 	 */
 	Customer activateCustomerById(Integer customerId) throws Exception;
 
@@ -61,7 +61,7 @@ public interface ICustomerService {
 	 *
 	 * @param customerId the ID of the customer to deactivate
 	 * @return {@code Customer} deactivated
-	 * @throws AccountsNotFoundException   if the customer is not found
+	 * @throws CustomerNotFoundException   if the customer is not found
 	 * @throws CustomerValidationException if the customer has active accounts and cannot be
 	 * deactivated
 	 * @throws ExternalServiceException    if there is an error connecting to the account service
@@ -72,7 +72,7 @@ public interface ICustomerService {
 	 * Deletes a customer by their ID.
 	 *
 	 * @param customerId the ID of the customer
-	 * @throws AccountsNotFoundException   if the customer is not found
+	 * @throws CustomerNotFoundException   if the customer is not found
 	 * @throws CustomerValidationException if the customer has accounts and cannot be deleted
 	 * @throws ExternalServiceException    if there is an error connecting to the account service
 	 */
@@ -85,7 +85,7 @@ public interface ICustomerService {
 	 * @return {@code boolean}true if the customer exists, false otherwise
 	 * @throws Exception if an error occurs during the check
 	 */
-	boolean customerExists(Integer customerId) throws Exception;
+	boolean customerExists(Integer customerId);
 
 	/**
 	 * Checks if a customer is active by their ID.
@@ -94,5 +94,5 @@ public interface ICustomerService {
 	 * @return {@code boolean} true if the customer is active, false otherwise
 	 * @throws Exception if an error occurs during the check
 	 */
-	boolean customerIsActive(Integer customerId) throws Exception;
+	boolean customerIsActive(Integer customerId);
 }
