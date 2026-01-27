@@ -21,11 +21,10 @@ public interface CustomerRepository extends JpaRepository<Customer, Integer> {
 	List<Customer> findAllByActiveTrue();
 
 	/**
-	 * Checks if an active customer exists with the given customer ID.
+	 * Checks if a customer with the given document number exists.
 	 *
-	 * @param customerId the ID of the customer to check
-	 * @return {@code boolean} true if an active customer with the given ID exists,
-	 * false otherwise.
+	 * @param documentNumber the document number to check.
+	 * @return {@code boolean} true if a customer with the document number exists, false otherwise.
 	 */
-	boolean existsByCustomerIdAndActiveTrue(Integer customerId);
+	boolean existsByDocumentNumber(String documentNumber);
 }

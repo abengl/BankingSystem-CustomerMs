@@ -41,6 +41,10 @@ public class CustomerServiceImpl implements ICustomerService {
 	@Override
 	public Customer createCustomer(Customer customer) {
 
+		if (customerRepository.existsByDocumentNumber(customer.getDocumentNumber())) {
+			throw new CustomerValidationException(
+					"Customer with document number " + customer.getDocumentNumber() + " already exists");
+		}
 		return customerRepository.save(customer);
 
 	}
