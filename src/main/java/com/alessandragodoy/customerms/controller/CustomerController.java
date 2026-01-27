@@ -24,7 +24,7 @@ import static com.alessandragodoy.customerms.utility.DTOMapper.convertToEntity;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/customers")
-@Tag(name = "Customers", description = "Controller for Customer")
+@Tag(name = "Customers", description = "Controller for client-facing Customer operations")
 public class CustomerController {
 
 	private final ICustomerService customerService;
@@ -154,33 +154,4 @@ public class CustomerController {
 
 	}
 
-	/**
-	 * Checks if a customer exists by their ID.
-	 *
-	 * @param customerId the ID of the customer to check
-	 * @return {@code boolean} true if the customer exists, false otherwise
-	 */
-	@Operation(summary = "Verify is a customer exists by its id", description = "Returns a " +
-			"boolean")
-	@GetMapping("/exists/{customerId}")
-	public boolean customerExists(@PathVariable Integer customerId) {
-
-		return customerService.customerExists(customerId);
-
-	}
-
-	/**
-	 * Checks if a customer is active by their ID.
-	 *
-	 * @param customerId the ID of the customer to check
-	 * @return {@code boolean} true if the customer is active, false otherwise
-	 */
-	@Operation(summary = "Verify is a customer is active by its id", description = "Returns a " +
-			"boolean")
-	@GetMapping("/active/{customerId}")
-	public boolean customerActive(@PathVariable Integer customerId) {
-
-		return customerService.customerIsActive(customerId);
-
-	}
 }

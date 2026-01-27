@@ -1,15 +1,18 @@
 package com.alessandragodoy.customerms.service.impl;
 
 import com.alessandragodoy.customerms.adapter.AccountServiceClient;
+import com.alessandragodoy.customerms.controller.dto.CustomerValidationResponseDTO;
 import com.alessandragodoy.customerms.exception.CustomerNotFoundException;
 import com.alessandragodoy.customerms.exception.CustomerValidationException;
 import com.alessandragodoy.customerms.model.Customer;
 import com.alessandragodoy.customerms.repository.CustomerRepository;
 import com.alessandragodoy.customerms.service.ICustomerService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Implementation of the CustomerService interface.
@@ -42,6 +45,7 @@ public class CustomerServiceImpl implements ICustomerService {
 
 	}
 
+	@Transactional
 	@Override
 	public Customer updateCustomerById(Integer customerId, Customer customer) {
 
@@ -62,6 +66,7 @@ public class CustomerServiceImpl implements ICustomerService {
 		return customerRepository.save(updatedCustomer);
 	}
 
+	@Transactional
 	@Override
 	public Customer activateCustomerById(Integer customerId) {
 
@@ -74,6 +79,7 @@ public class CustomerServiceImpl implements ICustomerService {
 		return customerRepository.save(activatedCustomer);
 	}
 
+	@Transactional
 	@Override
 	public Customer deactivateCustomerById(Integer customerId) {
 
@@ -90,6 +96,7 @@ public class CustomerServiceImpl implements ICustomerService {
 		return customerRepository.save(deactivatedCustomer);
 	}
 
+	@Transactional
 	@Override
 	public void deleteCustomerById(Integer customerId) {
 
@@ -105,15 +112,22 @@ public class CustomerServiceImpl implements ICustomerService {
 	}
 
 	@Override
-	public boolean customerExists(Integer customerId) {
+	public CustomerValidationResponseDTO validateCustomer(Integer customerId) {
 
-		return customerRepository.existsById(customerId);
-	}
+		Optional<Customer> customerOptional = customerRepository.findById(customerId);
 
-	@Override
-	public boolean customerIsActive(Integer customerId) {
+		if (customerOptional.isEmpty()) {
+			return CustomerValidationResponseDTO.invalid(
+					"Customer not found for ID: " + customerId);
+		}
 
-		return customerRepository.existsByCustomerIdAndActiveTrue(customerId);
+		Customer customer = customerOptional.get();
+		if (!customer.isActive()) {
+			return CustomerValidationResponseDTO.invalid(
+					"Customer is not active for ID: " + customerId);
+		}
+
+		return CustomerValidationResponseDTO.valid();
 	}
 
 }

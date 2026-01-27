@@ -1,8 +1,6 @@
 package com.alessandragodoy.customerms.service;
 
-import com.alessandragodoy.customerms.exception.CustomerNotFoundException;
-import com.alessandragodoy.customerms.exception.CustomerValidationException;
-import com.alessandragodoy.customerms.exception.ExternalServiceException;
+import com.alessandragodoy.customerms.controller.dto.CustomerValidationResponseDTO;
 import com.alessandragodoy.customerms.model.Customer;
 
 import java.util.List;
@@ -68,18 +66,11 @@ public interface ICustomerService {
 	void deleteCustomerById(Integer customerId);
 
 	/**
-	 * Checks if a customer exists by their ID.
+	 * Validates a customer by their ID.
 	 *
-	 * @param customerId the ID of the customer
-	 * @return {@code boolean}true if the customer exists, false otherwise
+	 * @param customerId the ID of the customer to validate
+	 * @return {@code CustomerValidationResponseDTO} containing validation result
 	 */
-	boolean customerExists(Integer customerId);
 
-	/**
-	 * Checks if a customer is active by their ID.
-	 *
-	 * @param customerId the ID of the customer
-	 * @return {@code boolean} true if the customer is active, false otherwise
-	 */
-	boolean customerIsActive(Integer customerId);
+	CustomerValidationResponseDTO validateCustomer(Integer customerId);
 }
