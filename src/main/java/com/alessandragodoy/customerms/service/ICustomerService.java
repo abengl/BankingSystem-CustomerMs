@@ -17,25 +17,23 @@ public interface ICustomerService {
 	 *
 	 * @return {@code List<Customer>} a list of active customers
 	 */
-	List<Customer> getAllActiveCustomers() throws Exception;
+	List<Customer> getAllActiveCustomers();
 
 	/**
 	 * Retrieves a customer by their ID.
 	 *
 	 * @param customerId the ID of the customer
 	 * @return {@code Customer} if found
-	 * @throws CustomerNotFoundException if the customer is not found
 	 */
-	Customer getCustomerById(Integer customerId) throws Exception;
+	Customer getCustomerById(Integer customerId);
 
 	/**
 	 * Creates a new customer.
 	 *
 	 * @param customer the customer data to create
 	 * @return {@code Customer} created
-	 * @throws Exception if an error occurs during creation
 	 */
-	Customer createCustomer(Customer customer) throws Exception;
+	Customer createCustomer(Customer customer);
 
 	/**
 	 * Updates a customer information by their ID.
@@ -43,47 +41,37 @@ public interface ICustomerService {
 	 * @param customerId the ID of the customer
 	 * @param customer   the customer data to update
 	 * @return {@code Customer} updated if successful
-	 * @throws CustomerNotFoundException if the customer is not found
 	 */
-	Customer updateCustomerById(Integer customerId, Customer customer) throws Exception;
+	Customer updateCustomerById(Integer customerId, Customer customer);
 
 	/**
 	 * Activates a customer by their ID.
 	 *
 	 * @param customerId the ID of the customer to activate
 	 * @return {@code Customer} activated
-	 * @throws CustomerNotFoundException if the customer is not found
 	 */
-	Customer activateCustomerById(Integer customerId) throws Exception;
+	Customer activateCustomerById(Integer customerId);
 
 	/**
 	 * Deactivates a customer by their ID.
 	 *
 	 * @param customerId the ID of the customer to deactivate
 	 * @return {@code Customer} deactivated
-	 * @throws CustomerNotFoundException   if the customer is not found
-	 * @throws CustomerValidationException if the customer has active accounts and cannot be
-	 * deactivated
-	 * @throws ExternalServiceException    if there is an error connecting to the account service
 	 */
-	Customer deactivateCustomerById(Integer customerId) throws Exception;
+	Customer deactivateCustomerById(Integer customerId);
 
 	/**
 	 * Deletes a customer by their ID.
 	 *
 	 * @param customerId the ID of the customer
-	 * @throws CustomerNotFoundException   if the customer is not found
-	 * @throws CustomerValidationException if the customer has accounts and cannot be deleted
-	 * @throws ExternalServiceException    if there is an error connecting to the account service
 	 */
-	void deleteCustomerById(Integer customerId) throws Exception;
+	void deleteCustomerById(Integer customerId);
 
 	/**
 	 * Checks if a customer exists by their ID.
 	 *
 	 * @param customerId the ID of the customer
 	 * @return {@code boolean}true if the customer exists, false otherwise
-	 * @throws Exception if an error occurs during the check
 	 */
 	boolean customerExists(Integer customerId);
 
@@ -92,7 +80,6 @@ public interface ICustomerService {
 	 *
 	 * @param customerId the ID of the customer
 	 * @return {@code boolean} true if the customer is active, false otherwise
-	 * @throws Exception if an error occurs during the check
 	 */
 	boolean customerIsActive(Integer customerId);
 }

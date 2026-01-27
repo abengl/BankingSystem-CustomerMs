@@ -22,29 +22,28 @@ public class CustomerServiceImpl implements ICustomerService {
 	private final CustomerRepository customerRepository;
 	private final AccountServiceClient accountServiceClient;
 
-	/* Customer MS CRUD methods */
 	@Override
-	public List<Customer> getAllActiveCustomers() throws Exception {
+	public List<Customer> getAllActiveCustomers() {
 
 		return customerRepository.findAllByActiveTrue();
 	}
 
 	@Override
-	public Customer getCustomerById(Integer customerId) throws Exception {
+	public Customer getCustomerById(Integer customerId) {
 
 		return customerRepository.findById(customerId)
 				.orElseThrow(() -> new CustomerNotFoundException("Customer not found"));
 	}
 
 	@Override
-	public Customer createCustomer(Customer customer) throws Exception {
+	public Customer createCustomer(Customer customer) {
 
 		return customerRepository.save(customer);
 
 	}
 
 	@Override
-	public Customer updateCustomerById(Integer customerId, Customer customer) throws Exception {
+	public Customer updateCustomerById(Integer customerId, Customer customer) {
 
 		Customer updatedCustomer =
 				customerRepository.findById(customerId)
@@ -92,7 +91,7 @@ public class CustomerServiceImpl implements ICustomerService {
 	}
 
 	@Override
-	public void deleteCustomerById(Integer customerId) throws Exception {
+	public void deleteCustomerById(Integer customerId) {
 
 		Customer deletedCustomer =
 				customerRepository.findById(customerId)
