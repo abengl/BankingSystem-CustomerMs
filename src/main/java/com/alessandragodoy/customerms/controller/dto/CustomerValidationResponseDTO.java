@@ -1,5 +1,6 @@
 package com.alessandragodoy.customerms.controller.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,13 +14,14 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class CustomerValidationResponseDTO {
 
 	@Schema(description = "Indicates if the customer exists", example = "true")
-	private boolean exists;
+	private Boolean exists;
 
 	@Schema(description = "Indicates if the customer is active", example = "true")
-	private boolean isActive;
+	private Boolean isActive;
 
 	@Schema(description = "Message providing additional information about the customer validation"
 			, example = "Customer is inactive")
@@ -35,6 +37,13 @@ public class CustomerValidationResponseDTO {
 	public static CustomerValidationResponseDTO invalid(String reason) {
 		return CustomerValidationResponseDTO.builder()
 				.exists(false)
+				.isActive(null)
+				.message(reason)
+				.build();
+	}
+	public static CustomerValidationResponseDTO inactive(String reason) {
+		return CustomerValidationResponseDTO.builder()
+				.exists(true)
 				.isActive(false)
 				.message(reason)
 				.build();

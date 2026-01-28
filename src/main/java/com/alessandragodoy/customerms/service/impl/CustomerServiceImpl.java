@@ -127,7 +127,7 @@ public class CustomerServiceImpl implements ICustomerService {
 
 		Customer customer = customerOptional.get();
 		if (!customer.isActive()) {
-			return CustomerValidationResponseDTO.invalid(
+			return CustomerValidationResponseDTO.inactive(
 					"Customer is not active for ID: " + customerId);
 		}
 
