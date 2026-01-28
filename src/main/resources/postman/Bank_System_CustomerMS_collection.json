@@ -7,30 +7,17 @@
 	},
 	"item": [
 		{
-			"name": "customer - get all active customers",
+			"name": "customer - get all customers",
 			"event": [
 				{
 					"listen": "test",
 					"script": {
 						"exec": [
-							"pm.test(\"/customers endpoint exists and responds with status OK 200 if successful\", () => {",
-							"    pm.expect(pm.response.status).to.eq('OK');",
-							"    pm.expect(pm.response.code).to.eq(200);",
-							"});",
-							"",
-							"pm.test(\"Response has the required fields\", function () {",
-							"    const responseData = pm.response.json();",
-							"",
-							"    pm.expect(responseData).to.be.an('array');",
-							"    responseData.forEach(function (customer) {",
-							"        pm.expect(customer).to.include.all.keys('customerId', 'firstName', 'lastName', 'dni', 'email');",
-							"    });",
-							"});",
-							"",
 							""
 						],
 						"type": "text/javascript",
-						"packages": {}
+						"packages": {},
+						"requests": {}
 					}
 				}
 			],
@@ -127,7 +114,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"firstName\": \"Katty\",\n    \"lastName\": \"Perez\",\n    \"documentNumber\": \"78945612\",\n    \"email\": \"kperez@mail.com\",\n    \"phoneNumber\": \"963963963\",\n    \"address\": \"Lima, Perú\"\n}",
+					"raw": "{\n    \"firstName\": \"Maria\",\n    \"lastName\": \"Condor\",\n    \"documentNumber\":\"85236974\",\n    \"email\": \"mcondor@mail.com\",\n    \"phoneNumber\": \"951357852\",\n    \"address\": \"Lima, Perú\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -202,6 +189,116 @@
 			"response": []
 		},
 		{
+			"name": "customer - activate customer",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response status code is 200\", function () {",
+							"    pm.expect(pm.response.code).to.equal(200);",
+							"});",
+							"",
+							"pm.test(\"Response has the required fields\", function () {",
+							"    const responseData = pm.response.json();",
+							"    ",
+							"    pm.expect(responseData).to.be.an('object');",
+							"    pm.expect(responseData).to.have.property('customerId');",
+							"    pm.expect(responseData).to.have.property('firstName');",
+							"    pm.expect(responseData).to.have.property('lastName');",
+							"    pm.expect(responseData).to.have.property('dni');",
+							"    pm.expect(responseData).to.have.property('email');",
+							"});",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"email\": \"jmendez@gmail.com\",\n    \"phoneNumber\": \"963852740\",\n    \"address\": \"Arequipa, Peru\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseURLcustomers}}/customers/activate/7",
+					"host": [
+						"{{baseURLcustomers}}"
+					],
+					"path": [
+						"customers",
+						"activate",
+						"7"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "customer - deactivate customer",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response status code is 200\", function () {",
+							"    pm.expect(pm.response.code).to.equal(200);",
+							"});",
+							"",
+							"pm.test(\"Response has the required fields\", function () {",
+							"    const responseData = pm.response.json();",
+							"    ",
+							"    pm.expect(responseData).to.be.an('object');",
+							"    pm.expect(responseData).to.have.property('customerId');",
+							"    pm.expect(responseData).to.have.property('firstName');",
+							"    pm.expect(responseData).to.have.property('lastName');",
+							"    pm.expect(responseData).to.have.property('dni');",
+							"    pm.expect(responseData).to.have.property('email');",
+							"});",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"email\": \"jmendez@gmail.com\",\n    \"phoneNumber\": \"963852740\",\n    \"address\": \"Arequipa, Peru\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseURLcustomers}}/customers/deactivate/7",
+					"host": [
+						"{{baseURLcustomers}}"
+					],
+					"path": [
+						"customers",
+						"deactivate",
+						"7"
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "customer - delete by customerId",
 			"event": [
 				{
@@ -223,13 +320,13 @@
 				"method": "DELETE",
 				"header": [],
 				"url": {
-					"raw": "{{baseURLcustomers}}/customers/8",
+					"raw": "{{baseURLcustomers}}/customers/7",
 					"host": [
 						"{{baseURLcustomers}}"
 					],
 					"path": [
 						"customers",
-						"8"
+						"7"
 					]
 				}
 			},
@@ -241,13 +338,14 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "{{baseURLcustomers}}/customers/exists/7",
+					"raw": "{{baseURLcustomers}}/internal/customers/validate-customer/7",
 					"host": [
 						"{{baseURLcustomers}}"
 					],
 					"path": [
+						"internal",
 						"customers",
-						"exists",
+						"validate-customer",
 						"7"
 					]
 				}
