@@ -2,6 +2,7 @@ package com.alessandragodoy.customerms.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
@@ -65,6 +66,27 @@ public class GlobalExceptionHandler {
 	@ExceptionHandler(CustomerValidationException.class)
 	public ResponseEntity<CustomErrorResponse> handleValidationException(
 			CustomerValidationException ex, WebRequest request) {
+
+		CustomErrorResponse err = new CustomErrorResponse(
+				LocalDateTime.now(),
+				ex.getMessage(),
+				request.getDescription(false)
+		);
+
+		return new ResponseEntity<>(err, HttpStatus.BAD_REQUEST);
+	}
+
+	/**
+	 * Handles MethodArgumentNotValidException and returns a 400 Bad Request response
+	 * when method arguments fail validation.
+	 *
+	 * @param ex      the MethodArgumentNotValidException that was thrown
+	 * @param request the web request during which the exception occurred
+	 * @return a ResponseEntity containing a 400 status and a custom error response.
+	 */
+	@ExceptionHandler(MethodArgumentNotValidException.class)
+	public ResponseEntity<CustomErrorResponse> handleMethodArgumentNotValidException(
+			MethodArgumentNotValidException ex, WebRequest request) {
 
 		CustomErrorResponse err = new CustomErrorResponse(
 				LocalDateTime.now(),

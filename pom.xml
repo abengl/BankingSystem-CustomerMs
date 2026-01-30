@@ -10,7 +10,7 @@
         <relativePath/>
     </parent>
 
-    <groupId>com.alessandragodoy</groupId>
+    <groupId>com.bankingsystem</groupId>
     <artifactId>customer-ms</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>customerms</name>
@@ -168,13 +168,11 @@
                 <artifactId>jacoco-maven-plugin</artifactId>
                 <version>0.8.12</version>
                 <executions>
-                    <!-- Attach the JaCoCo agent -->
                     <execution>
                         <goals>
                             <goal>prepare-agent</goal>
                         </goals>
                     </execution>
-                    <!-- Generate the coverage report -->
                     <execution>
                         <id>report</id>
                         <phase>test</phase>
@@ -182,21 +180,23 @@
                             <goal>report</goal>
                         </goals>
                         <configuration>
+                            <title>${project.artifactId}</title>
                             <excludes>
-                                <!-- Exclude classes or packages -->
-                                <exclude>com/alessandragodoy/customerms/configuration/**</exclude>
-                                <exclude>com/alessandragodoy/customerms/exception/**</exclude>
-                                <exclude>com/alessandragodoy/customerms/utility/**</exclude>
-                                <exclude>com/alessandragodoy/customerms/adapter/**</exclude>
-                                <exclude>com/alessandragodoy/customerms/api/**</exclude>
-                                <exclude>com/alessandragodoy/customerms/model/CustomerDTO*</exclude>
-                                <exclude>com/alessandragodoy/customerms/CustomerMsApplication*</exclude>
+                                <exclude>**/customerms/configuration/**</exclude>
+                                <exclude>**/customerms/exception/**</exclude>
+                                <exclude>**/customerms/utility/**</exclude>
+                                <exclude>**/customerms/adapter/**</exclude>
+                                <exclude>**/customerms/model/**</exclude>
+                                <exclude>**/customerms/controller/dto/**
+                                </exclude>
+                                <exclude>**/customerms/api/**</exclude>
+                                <exclude>**/customerms/model/**</exclude>
+                                <exclude>**/customerms/CustomerMsApplication*</exclude>
                             </excludes>
                         </configuration>
                     </execution>
                 </executions>
                 <configuration>
-                    <!-- Coverage rules -->
                     <rules>
                         <rule>
                             <element>BUNDLE</element>

@@ -34,19 +34,19 @@ public class CustomerDTO {
 	@Schema(description = "Costumer's document number", example = "12345678")
 	String documentNumber;
 
-	@NotEmpty(message = "Email cannot be empty")
+	@NotBlank(message = "Email cannot be empty")
 	@Email
 	@Size(max = 50, message = "Email length must not exceed 50 characters")
 	@Schema(description = "Email address of the customer", example = "jdoe@mail.com")
 	String email;
 
-	@NotEmpty(message = "Phone number cannot be empty")
+	@NotBlank(message = "Phone number cannot be empty")
 	@Pattern(regexp = "\\d{9,12}", message = "Phone number must contain only digits")
 	@Size(max = 12, message = "Phone number length must not exceed 12 characters")
 	@Schema(description = "Phone number of the customer", example = "51999999999")
 	String phoneNumber;
 
-	@NotEmpty(message = "Address cannot be empty")
+	@NotBlank(message = "Address cannot be empty")
 	@Size(max = 150, message = "Address length must not exceed 150 characters")
 	@Schema(description = "Address of the customer", example = "123 Main St, Lima, Peru")
 	String address;
