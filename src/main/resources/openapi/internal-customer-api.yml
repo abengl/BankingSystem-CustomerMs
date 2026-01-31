@@ -1,0 +1,136 @@
+openapi: 3.0.1
+info:
+  title: Banking System - Customer Microservice Internal API
+  description: |
+    Internal API for microservice-to-microservice communication.
+    
+    This API is used by other microservices to:
+    - Validate customer existence and status
+    - Check customer eligibility for operations
+    
+    **Note**: This API should only be accessible within the internal network.
+  contact:
+    name: Alessandra Godoy
+    email: api@alessandragodoy.com
+  version: 1.2.0
+servers:
+  - url: http://customer-service:8085
+    description: Internal service
+  - url: http://localhost:8085
+    description: Local development server
+tags:
+  - name: "Internal Customer"
+    description: Internal operations for microservice communication
+
+paths:
+  /api/v1/internal/customers/validate-customer/{customerId}:
+    get:
+      tags:
+        - "Internal Customer"
+      summary: Validate customer existence and status
+      description: |
+        Validates whether a customer exists and is active.
+        Used by other microservices before performing operations that require a valid customer.
+        
+        **Use cases**:
+        - Account service validates customer before creating account
+      operationId: validateCustomer
+      parameters:
+        - name: customerId
+          in: path
+          required: true
+          description: The unique identifier of the customer to validate
+          schema:
+            type: integer
+            format: int32
+            minimum: 1
+          example: 1
+      responses:
+        '200':
+          description: Validation result (always returns 200, check response body for validation status)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomerValidationResponseDTO'
+              examples:
+                validCustomer:
+                  summary: Valid and active customer
+                  value:
+                    exists: true
+                    isActive: true
+                    message: null
+                customerNotFound:
+                  summary: Customer does not exist
+                  value:
+                    exists: false
+                    isActive: null
+                    message: "Customer not found for ID: 999"
+                inactiveCustomer:
+                  summary: Customer exists but is inactive
+                  value:
+                    exists: true
+                    isActive: false
+                    message: "Customer is not active for ID: 1"
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomErrorResponse'
+              examples:
+                CustomErrorResponse:
+                  summary: Generic error response
+                  value:
+                    timestamp: "2026-01-30T10:15:30"
+                    message: "Unable to connect to database"
+                    path: "/api/v1/internal/customers/validate-customer/1"
+
+components:
+  schemas:
+    CustomerValidationResponseDTO:
+      type: object
+      description: |
+        Response indicating customer validation status.
+        
+        **Interpretation**:
+        - exists=true, isActive=true: Customer is valid and can be used
+        - exists=true, isActive=false: Customer exists but is deactivated
+        - exists=false, isActive=null: Customer does not exist
+      properties:
+        exists:
+          type: boolean
+          description: Indicates whether the customer exists in the system
+          example: true
+        isActive:
+          type: boolean
+          nullable: true
+          description: |
+            Indicates whether the customer is active.
+            Will be null if customer doesn't exist.
+          example: true
+        message:
+          type: string
+          nullable: true
+          description: |
+            Additional information about the validation result.
+            Typically contains error details when validation fails.
+          example: "Customer is not active for ID: 1"
+      required:
+        - exists
+
+    CustomErrorResponse:
+      type: object
+      properties:
+        timestamp:
+          type: string
+          format: date-time
+          description: Timestamp when the error occurred
+          example: "2024-01-30T10:15:30"
+        message:
+          type: string
+          description: Detailed error message
+          example: "Unable to connect to database"
+        path:
+          type: string
+          description: Request path that caused the error
+          example: "/api/v1/internal/customers/validate-customer/1"

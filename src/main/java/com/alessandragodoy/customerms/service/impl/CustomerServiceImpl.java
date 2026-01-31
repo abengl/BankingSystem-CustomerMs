@@ -1,14 +1,13 @@
 package com.alessandragodoy.customerms.service.impl;
 
-import com.alessandragodoy.customerms.adapter.CustomerAdapter;
-import com.alessandragodoy.customerms.controller.dto.CustomerDTO;
-import com.alessandragodoy.customerms.utility.CustomerMapper;
-import com.alessandragodoy.customerms.exception.AccountsNotFoundException;
+import com.alessandragodoy.customerms.adapter.AccountServiceClient;
+import com.alessandragodoy.customerms.dto.CustomerValidationResponseDTO;
+import com.alessandragodoy.customerms.exception.CustomerNotFoundException;
 import com.alessandragodoy.customerms.exception.CustomerValidationException;
 import com.alessandragodoy.customerms.model.Customer;
 import com.alessandragodoy.customerms.repository.CustomerRepository;
-import com.alessandragodoy.customerms.service.CustomerService;
-import com.alessandragodoy.customerms.utility.CustomerValidationUtils;
+import com.alessandragodoy.customerms.service.ICustomerService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -21,78 +20,119 @@ import java.util.Optional;
  */
 @Service
 @RequiredArgsConstructor
-public class CustomerServiceImpl implements CustomerService {
+public class CustomerServiceImpl implements ICustomerService {
 
 	private final CustomerRepository customerRepository;
-	private final CustomerAdapter customerAdapter;
+	private final AccountServiceClient accountServiceClient;
 
-	/* Customer MS CRUD methods */
 	@Override
-	public List<CustomerDTO> getAllCustomers() {
-		return customerRepository.findAll().stream().map(CustomerMapper::toDTO).toList();
+	public List<Customer> getAllActiveCustomers() {
+
+		return customerRepository.findAllByActiveTrue();
 	}
 
 	@Override
-	public CustomerDTO getCustomerById(Integer customerId) {
-		return customerRepository.findById(customerId).map(CustomerMapper::toDTO)
-				.orElseThrow(() -> new AccountsNotFoundException("Customer not found"));
+	public Customer getCustomerById(Integer customerId) {
+
+		return customerRepository.findById(customerId)
+				.orElseThrow(() -> new CustomerNotFoundException("Customer not found"));
 	}
 
 	@Override
-	public CustomerDTO updateCustomerById(Integer customerId, CustomerDTO customerDTO) {
-		validateCustomerData(customerDTO);
-		return customerRepository.findById(customerId).map(existingCustomer -> {
-			Customer updatedCustomer = CustomerMapper.toEntity(customerDTO);
-			customerRepository.save(updatedCustomer);
-			return CustomerMapper.toDTO(updatedCustomer);
-		}).orElseThrow(() -> new AccountsNotFoundException("Customer not found"));
+	public Customer createCustomer(Customer customer) {
+
+		if (customerRepository.existsByDocumentNumber(customer.getDocumentNumber())) {
+			throw new CustomerValidationException(
+					"Customer with document number " + customer.getDocumentNumber() + " already exists");
+		}
+		return customerRepository.save(customer);
+
 	}
 
+	@Transactional
 	@Override
-	public CustomerDTO createCustomer(CustomerDTO customerDTO) {
-		validateCustomerData(customerDTO);
-		Customer customer = CustomerMapper.dtoCreateToEntity(customerDTO);
-		customerRepository.save(customer);
-		return CustomerMapper.toDTO(customer);
+	public Customer updateCustomerById(Integer customerId, Customer customer) {
+
+		Customer updatedCustomer =
+				customerRepository.findById(customerId)
+						.orElseThrow(() -> new CustomerNotFoundException("Customer not found"));
+
+		if (!customer.getEmail().isBlank()) {
+			updatedCustomer.setEmail(customer.getEmail());
+		}
+		if (!customer.getPhoneNumber().isBlank()) {
+			updatedCustomer.setPhoneNumber(customer.getPhoneNumber());
+		}
+		if (!customer.getAddress().isBlank()) {
+			updatedCustomer.setAddress(customer.getAddress());
+		}
+
+		return customerRepository.save(updatedCustomer);
 	}
 
+	@Transactional
 	@Override
-	public CustomerDTO deleteCustomerById(Integer customerId) {
-		if (customerAdapter.customerHasAccounts(customerId)) {
+	public Customer activateCustomerById(Integer customerId) {
+
+		Customer activatedCustomer =
+				customerRepository.findById(customerId)
+						.orElseThrow(() -> new CustomerNotFoundException("Customer not found"));
+
+		activatedCustomer.setActive(true);
+
+		return customerRepository.save(activatedCustomer);
+	}
+
+	@Transactional
+	@Override
+	public Customer deactivateCustomerById(Integer customerId) {
+
+		Customer deactivatedCustomer =
+				customerRepository.findById(customerId)
+						.orElseThrow(() -> new CustomerNotFoundException("Customer not found"));
+
+		if (accountServiceClient.customerHasActiveAccounts(customerId)) {
 			throw new CustomerValidationException("Customer has accounts and cannot be deleted.");
 		}
-		return customerRepository.findById(customerId).map(existingCustomer -> {
-			customerRepository.delete(existingCustomer);
-			return CustomerMapper.toDTO(existingCustomer);
-		}).orElseThrow(() -> new AccountsNotFoundException("Customer not found"));
+
+		deactivatedCustomer.setActive(false);
+
+		return customerRepository.save(deactivatedCustomer);
 	}
+
+/*	@Transactional
+	@Override
+	public void deleteCustomerById(Integer customerId) {
+
+		Customer deletedCustomer =
+				customerRepository.findById(customerId)
+						.orElseThrow(() -> new CustomerNotFoundException("Customer not found"));
+
+		if (accountServiceClient.customerHasActiveAccounts(customerId)) {
+			throw new CustomerValidationException("Customer has accounts and cannot be deleted.");
+		}
+
+		customerRepository.delete(deletedCustomer);
+	}*/
 
 	@Override
-	public boolean customerExists(Integer customerId) {
-		return customerRepository.existsById(customerId);
+	public CustomerValidationResponseDTO validateCustomer(Integer customerId) {
+
+		Optional<Customer> customerOptional = customerRepository.findById(customerId);
+
+		if (customerOptional.isEmpty()) {
+			return CustomerValidationResponseDTO.invalid(
+					"Customer not found for ID: " + customerId);
+		}
+
+		Customer customer = customerOptional.get();
+		if (!customer.isActive()) {
+			return CustomerValidationResponseDTO.inactive(
+					"Customer is not active for ID: " + customerId);
+		}
+
+		return CustomerValidationResponseDTO.valid();
 	}
 
-	/* Helper methods */
-	private void validateCustomerData(CustomerDTO customerDTO) {
-		CustomerValidationUtils.checkRequiredFields(
-				customerDTO.firstName(),
-				customerDTO.lastName(),
-				customerDTO.dni(),
-				customerDTO.email()
-		);
-		CustomerValidationUtils.checkDniFormat(customerDTO.dni());
-		CustomerValidationUtils.checkEmailFormat(customerDTO.email());
-		checkDniUniqueness(customerDTO.dni(), customerDTO.customerId());
-
-	}
-
-	private void checkDniUniqueness(String dni, Integer customerId) {
-		Optional<Customer> customerOptional = customerRepository.findByDni(dni);
-		customerOptional.ifPresent(customer -> {
-			if (!customer.getCustomerId().equals(customerId)) {
-				throw new CustomerValidationException("DNI number is already registered.");
-			}
-		});
-	}
 }
 

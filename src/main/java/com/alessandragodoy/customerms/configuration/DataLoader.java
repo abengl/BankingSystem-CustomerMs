@@ -18,30 +18,40 @@ import java.util.List;
 @RequiredArgsConstructor
 public class DataLoader implements CommandLineRunner {
 
-	private final CustomerRepository customerRepository;
 	private static final Logger LOGGER = LoggerFactory.getLogger(DataLoader.class);
+	private final CustomerRepository customerRepository;
 
 	@Override
 	public void run(String... args) {
 		if (customerRepository.count() == 0) {
-			LOGGER.info("No customers found, creating initial customers...");
-			List<Customer> initialCustomers = List.of(
-					Customer.builder().firstName("Julia").lastName("Mendez").dni("11111111")
-					.email("jmendez@mail.com").build(),
-					Customer.builder().firstName("Alicia").lastName("Ramirez").dni("22222222")
-					.email("aramirez@mail.com").build(),
-					Customer.builder().firstName("Jose").lastName("Melendez").dni("33333333")
-					.email("jmelendez@mail.com").build(),
-					Customer.builder().firstName("Carla").lastName("Gomez").dni("44444444")
-					.email("cgomez@mail.com").build(),
-					Customer.builder().firstName("Juan").lastName("Perez").dni("55555555")
-							.email("jperez@mail.com").build()
-					);
+			LOGGER.info("STARTING - No customers found, adding initial customers...");
+			List<Customer> initialCustomers =
+					List.of(Customer.builder().firstName("Julia").lastName("Mendez")
+									.documentNumber("11111111").email("jmendez@mail.com")
+									.phoneNumber("963852741").address("Lima, Perú").build(),
+							Customer.builder().firstName("Alicia").lastName("Ramirez")
+									.documentNumber("22222222").email("aramirez@mail.com")
+									.phoneNumber("741852963").address("Lima, Perú").build(),
+							Customer.builder().firstName("Jose").lastName("Melendez")
+									.documentNumber("33333333").email("jmelendez@mail.com")
+									.phoneNumber("863214569").address("Lima, Perú").build(),
+							Customer.builder().firstName("Carla").lastName("Gomez")
+									.documentNumber("44444444").email("cgomez@mail.com")
+									.phoneNumber("963963852").address("Lima, Perú").build(),
+							Customer.builder().firstName("Juan").lastName("Perez")
+									.documentNumber("55555555").email("jperez@mail.com")
+									.phoneNumber("741874521").address("Lima, Perú").build(),
+							Customer.builder().firstName("Ana").lastName("Meza")
+									.documentNumber("66666666").email("ameza@mail.com")
+									.phoneNumber("852741963").address("Cajamarca, Peru").build(),
+							Customer.builder().firstName("Luis").lastName("Torres")
+									.documentNumber("77777777").email("ltorres@mail.com")
+									.phoneNumber("965793126").address("San Martin, Peru").build());
 
 			customerRepository.saveAll(initialCustomers);
-			LOGGER.info("Initial customers added to the database.");
+			LOGGER.info("COMPLETED - Customers added to the database.");
 		} else {
-			LOGGER.info("Customers already exist, skipping initialization.");
+			LOGGER.info("SKIPPED - Customers already exist, skipping initialization.");
 		}
 	}
 }
