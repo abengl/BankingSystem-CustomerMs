@@ -1,6 +1,6 @@
 package com.alessandragodoy.customerms.controller;
 
-import com.alessandragodoy.customerms.controller.dto.CustomerValidationResponseDTO;
+import com.alessandragodoy.customerms.dto.CustomerValidationResponseDTO;
 import com.alessandragodoy.customerms.service.ICustomerService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;

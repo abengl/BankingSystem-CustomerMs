@@ -1,6 +1,6 @@
 package com.alessandragodoy.customerms.service;
 
-import com.alessandragodoy.customerms.controller.dto.CustomerValidationResponseDTO;
+import com.alessandragodoy.customerms.dto.CustomerValidationResponseDTO;
 import com.alessandragodoy.customerms.model.Customer;
 
 import java.util.List;
@@ -58,12 +58,7 @@ public interface ICustomerService {
 	 */
 	Customer deactivateCustomerById(Integer customerId);
 
-	/**
-	 * Deletes a customer by their ID.
-	 *
-	 * @param customerId the ID of the customer
-	 */
-	void deleteCustomerById(Integer customerId);
+//	void deleteCustomerById(Integer customerId);
 
 	/**
 	 * Validates a customer by their ID.

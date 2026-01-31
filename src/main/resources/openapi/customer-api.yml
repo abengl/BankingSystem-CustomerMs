@@ -1,0 +1,430 @@
+openapi: 3.0.1
+info:
+  title: Banking System - Customer Microservice API
+  description: |
+    Client-facing API for managing customers with full CRUD operations.
+    
+    This API provides endpoints for:
+    - Creating new customers
+    - Retrieving customer information
+    - Updating customer details
+    - Activating/deactivating customers
+    - Deleting customers
+  contact:
+    name: Alessandra Godoy
+    email: dev@alessandragodoy.com
+  version: 1.0.0
+servers:
+  - url: https://api.banking-system.com
+    description: Production server
+  - url: http://localhost:8085
+    description: Local development server
+tags:
+  - name: Customer
+    description: Operations for managing customer accounts
+
+paths:
+  /api/v1/customers:
+    get:
+      tags:
+        - Customer
+      summary: Retrieve all active customers
+      description: Returns a paginated list of all active customers in the system
+      operationId: getAllCustomers
+      responses:
+        '200':
+          description: Successfully retrieved list of customers
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CustomerDTO'
+              examples:
+                customerList:
+                  summary: Example customer list
+                  value:
+                    - customerId: 1
+                      firstName: "John"
+                      lastName: "Doe"
+                      documentNumber: "87654321"
+                      email: "jdoe@mail.com"
+                      phoneNumber: "51999999999"
+                      address: "123 Main St, Lima, Peru"
+                    - customerId: 2
+                      firstName: "Jane"
+                      lastName: "Smith"
+                      documentNumber: "87654321"
+                      email: "jsmith@mail.com"
+                      phoneNumber: "51988888888"
+                      address: "456 Oak Ave, Arequipa, Peru"
+    post:
+      tags:
+        - Customer
+      summary: Create a new customer
+      description: Creates a new customer with the provided information
+      operationId: createCustomer
+      requestBody:
+        required: true
+        description: Customer data to create
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CustomerDTO'
+            examples:
+              newCustomer:
+                summary: New customer example
+                value:
+                  firstName: "Carlos"
+                  lastName: "Torres"
+                  documentNumber: "45678912"
+                  email: "ctorres@example.com"
+                  phoneNumber: "51977777777"
+                  address: "789 Pine St, Cusco, Peru"
+      responses:
+        '201':
+          description: Customer created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomerDTO'
+              examples:
+                createdCustomer:
+                  summary: Created customer response
+                  value:
+                    customerId: 3
+                    firstName: "Carlos"
+                    lastName: "Rodriguez"
+                    documentNumber: "45678912"
+                    email: "ctorres@example.com"
+                    phoneNumber: "51977777777"
+                    address: "789 Pine St, Cusco, Peru"
+        '400':
+          description: Invalid input data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomErrorResponse'
+              examples:
+                CustomErrorResponse:
+                  summary: Validation error example
+                  value:
+                    timestamp: "2026-01-30T10:15:30"
+                    message: "Validation failed"
+                    path: "/api/v1/customers"
+        '409':
+          description: Customer with document number already exists
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomErrorResponse'
+              examples:
+                CustomErrorResponse:
+                  summary: Conflict error example
+                  value:
+                    timestamp: "2026-01-30T10:15:30"
+                    message: "Customer with document number already exists"
+                    path: "/api/v1/customers"
+  /api/v1/customers/{customerId}:
+    get:
+      tags:
+        - Customer
+      summary: Retrieve a customer by ID
+      description: Returns detailed information about a specific customer
+      operationId: getCustomerById
+      parameters:
+        - name: customerId
+          in: path
+          required: true
+          description: The unique identifier of the customer
+          schema:
+            type: integer
+            format: int32
+            minimum: 1
+          example: 1
+      responses:
+        '200':
+          description: Customer found successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomerDTO'
+              examples:
+                customerDetails:
+                  summary: Customer details
+                  value:
+                    customerId: 1
+                    firstName: "John"
+                    lastName: "Doe"
+                    documentNumber: "12345678"
+                    email: "john.doe@example.com"
+                    phoneNumber: "51999999999"
+                    address: "123 Main St, Lima, Peru"
+        '404':
+          description: Customer not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomErrorResponse'
+              examples:
+                CustomErrorResponse:
+                  summary: Not found error example
+                  value:
+                    timestamp: "2026-01-30T10:15:30"
+                    message: "Customer not found."
+                    path: "/api/v1/customers/999"
+  /api/v1/customers/update/{customerId}:
+    patch:
+      tags:
+        - Customer
+      summary: Update customer information
+      description: |
+        Partially updates customer information. Only provided fields will be updated.
+        Fields that can be updated: email, phoneNumber, address
+      operationId: updateCustomer
+      parameters:
+        - name: customerId
+          in: path
+          required: true
+          description: The unique identifier of the customer to update
+          schema:
+            type: integer
+            format: int32
+            minimum: 1
+          example: 1
+      requestBody:
+        required: true
+        description: Customer fields to update
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateCustomerDTO'
+            examples:
+              updateEmail:
+                summary: Update email only
+                value:
+                  email: "newemail@example.com"
+              updateMultiple:
+                summary: Update multiple fields
+                value:
+                  email: "updated@example.com"
+                  phoneNumber: "51966666666"
+                  address: "999 New Address, Lima, Peru"
+      responses:
+        '200':
+          description: Customer updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomerDTO'
+        '400':
+          description: Invalid input data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomErrorResponse'
+              examples:
+                CustomErrorResponse:
+                  summary: Validation error example
+                  value:
+                    timestamp: "2026-01-30T10:15:30"
+                    message: "Validation failed"
+                    path: "/api/v1/customers"
+        '404':
+          description: Customer not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomErrorResponse'
+              examples:
+                CustomErrorResponse:
+                  summary: Not found error example
+                  value:
+                    timestamp: "2026-01-30T10:15:30"
+                    message: "Customer not found."
+                    path: "/api/v1/customers/update/999"
+
+  /api/v1/customers/activate/{customerId}:
+    patch:
+      tags:
+        - Customer
+      summary: Activate a customer
+      description: Reactivates a previously deactivated customer account
+      operationId: activateCustomer
+      parameters:
+        - name: customerId
+          in: path
+          required: true
+          description: The unique identifier of the customer to activate
+          schema:
+            type: integer
+            format: int32
+            minimum: 1
+          example: 1
+      responses:
+        '200':
+          description: Customer activated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomerDTO'
+        '404':
+          description: Customer not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomErrorResponse'
+              examples:
+                CustomErrorResponse:
+                  summary: Not found error example
+                  value:
+                    timestamp: "2026-01-30T10:15:30"
+                    message: "Customer not found."
+                    path: "/api/v1/customers/activate/999"
+
+  /api/v1/customers/deactivate/{customerId}:
+    patch:
+      tags:
+        - Customer
+      summary: Deactivate a customer
+      description: |
+        Deactivates a customer account, preventing new operations.
+        A customer cannot be deactivated if they have active accounts.
+      operationId: deactivateCustomer
+      parameters:
+        - name: customerId
+          in: path
+          required: true
+          description: The unique identifier of the customer to deactivate
+          schema:
+            type: integer
+            format: int32
+            minimum: 1
+          example: 1
+      responses:
+        '200':
+          description: Customer deactivated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomerDTO'
+        '404':
+          description: Customer not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomErrorResponse'
+              examples:
+                CustomErrorResponse:
+                  summary: Not found error example
+                  value:
+                    timestamp: "2026-01-30T10:15:30"
+                    message: "Customer not found."
+                    path: "/api/v1/customers/deactivate/999"
+        '409':
+          description: Customer cannot be deactivated due to active accounts
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomErrorResponse'
+              examples:
+                CustomErrorResponse:
+                  summary: Conflict error example
+                  value:
+                    timestamp: "2026-01-30T10:15:30"
+                    message: "Customer has active accounts and cannot be deactivated."
+                    path: "/api/v1/customers/deactivate/1"
+components:
+  schemas:
+    CustomerDTO:
+      type: object
+      required:
+        - firstName
+        - lastName
+        - documentNumber
+        - email
+        - phoneNumber
+        - address
+      properties:
+        customerId:
+          type: integer
+          format: int32
+          description: Unique identifier for the customer (generated by system)
+          readOnly: true
+          example: 1
+        firstName:
+          type: string
+          description: First name of the customer
+          minLength: 1
+          maxLength: 30
+          example: "Jane"
+        lastName:
+          type: string
+          description: Last name of the customer
+          minLength: 1
+          maxLength: 30
+          example: "Doe"
+        documentNumber:
+          type: string
+          description: Customer's unique document/identification number
+          minLength: 1
+          maxLength: 15
+          example: "87654321"
+        email:
+          type: string
+          format: email
+          description: Email address of the customer
+          minLength: 1
+          maxLength: 50
+          example: "jdoe@mail.com"
+        phoneNumber:
+          type: string
+          description: Phone number of the customer (digits only)
+          pattern: '^\d{9,12}$'
+          minLength: 9
+          maxLength: 12
+          example: "51999999999"
+        address:
+          type: string
+          description: Address of the customer
+          minLength: 1
+          maxLength: 150
+          example: "123 Main St, Lima, Peru"
+    UpdateCustomerDTO:
+      type: object
+      description: DTO for partial customer updates. All fields are optional.
+      properties:
+        email:
+          type: string
+          format: email
+          description: Email address of the customer
+          maxLength: 50
+          example: "jdoe@mail.com"
+        phoneNumber:
+          type: string
+          description: Phone number of the customer (digits only)
+          pattern: '^\d{9,12}$'
+          maxLength: 12
+          example: "51999999999"
+        address:
+          type: string
+          description: Physical address of the customer
+          maxLength: 150
+          example: "123 Main St, Lima, Peru"
+    CustomErrorResponse:
+      type: object
+      properties:
+        timestamp:
+          type: string
+          format: date-time
+          description: Timestamp when the error occurred
+          example: "2024-01-30T10:15:30"
+        message:
+          type: string
+          description: Detailed error message
+          example: "Customer not found"
+        path:
+          type: string
+          description: Request path that caused the error
+          example: "/api/v1/customers/999"
+

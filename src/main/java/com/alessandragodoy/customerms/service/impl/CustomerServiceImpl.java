@@ -1,7 +1,7 @@
 package com.alessandragodoy.customerms.service.impl;
 
 import com.alessandragodoy.customerms.adapter.AccountServiceClient;
-import com.alessandragodoy.customerms.controller.dto.CustomerValidationResponseDTO;
+import com.alessandragodoy.customerms.dto.CustomerValidationResponseDTO;
 import com.alessandragodoy.customerms.exception.CustomerNotFoundException;
 import com.alessandragodoy.customerms.exception.CustomerValidationException;
 import com.alessandragodoy.customerms.model.Customer;
@@ -100,7 +100,7 @@ public class CustomerServiceImpl implements ICustomerService {
 		return customerRepository.save(deactivatedCustomer);
 	}
 
-	@Transactional
+/*	@Transactional
 	@Override
 	public void deleteCustomerById(Integer customerId) {
 
@@ -113,7 +113,7 @@ public class CustomerServiceImpl implements ICustomerService {
 		}
 
 		customerRepository.delete(deletedCustomer);
-	}
+	}*/
 
 	@Override
 	public CustomerValidationResponseDTO validateCustomer(Integer customerId) {

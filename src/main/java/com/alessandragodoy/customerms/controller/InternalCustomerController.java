@@ -1,13 +1,11 @@
 package com.alessandragodoy.customerms.controller;
 
-import com.alessandragodoy.customerms.controller.dto.CustomerValidationResponseDTO;
+import com.alessandragodoy.customerms.api.internal.InternalCustomerApi;
+import com.alessandragodoy.customerms.dto.CustomerValidationResponseDTO;
 import com.alessandragodoy.customerms.service.ICustomerService;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 
@@ -17,14 +15,17 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/internal/customers")
-@Tag(name = "Internal Customers", description = "Controller for microservices' Customer " +
-		"operations")
-public class InternalCustomerController {
+public class InternalCustomerController implements InternalCustomerApi {
 
 	private final ICustomerService customerService;
 
-	@GetMapping("/validate-customer/{customerId}")
+	/**
+	 * Validates a customer by their unique identifier.
+	 *
+	 * @param customerId The unique identifier of the customer to validate (required)
+	 * @return {@code ResponseEntity<CustomerValidationResponseDTO>} containing the validation result
+	 */
+	@Override
 	public ResponseEntity<CustomerValidationResponseDTO> validateCustomer(
 			@PathVariable Integer customerId) {
 
