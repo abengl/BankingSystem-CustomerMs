@@ -3,7 +3,8 @@ name: Build and Push Customer MS
 on:
   # Only trigger when code is pushed to main (i.e., when PR is merged)
   push:
-    branches: [ main ]
+    branches: [ main, ms-customer-deploy ]
+  workflow_dispatch:
 
 jobs:
   # Job 1: Run tests and quality checks
