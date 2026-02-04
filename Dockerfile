@@ -22,7 +22,7 @@ WORKDIR /app
 # Copy JAR from builder stage
 COPY --from=builder /build/target/*.jar app.jar
 
-# Memory optimization for EC2 t3.micro (256MB per service)
+# Memory optimization for container environments
 ENV JAVA_OPTS="-Xmx256m \
                -Xms128m \
                -XX:+UseSerialGC \
