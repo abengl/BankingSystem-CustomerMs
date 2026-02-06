@@ -15,14 +15,13 @@ info:
     email: api@alessandragodoy.com
   version: 1.2.0
 servers:
-  - url: https://api.banking-system.com
+  - url: https://customers.alessandragodoy.com
     description: Production server
   - url: http://localhost:8085
     description: Local development server
 tags:
   - name: Customer
     description: Operations for managing customer accounts
-
 paths:
   /api/v1/customers:
     get:
