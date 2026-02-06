@@ -15,14 +15,13 @@ info:
     email: api@alessandragodoy.com
   version: 1.2.0
 servers:
-  - url: https://api.banking-system.com
+  - url: https://customers.alessandragodoy.com
     description: Production server
   - url: http://localhost:8085
     description: Local development server
 tags:
   - name: Customer
     description: Operations for managing customer accounts
-
 paths:
   /api/v1/customers:
     get:
@@ -288,8 +287,9 @@ paths:
         - Customer
       summary: Deactivate a customer
       description: |
-        Deactivates a customer account, preventing new operations.
-        A customer cannot be deactivated if they have active accounts.
+        Deactivates a customer account, preventing new account operations.
+        A customer cannot be deactivated if they have active accounts, as verified by interacting with the **Account 
+        microservice**.
       operationId: deactivateCustomer
       parameters:
         - name: customerId

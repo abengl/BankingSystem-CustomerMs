@@ -3,6 +3,7 @@ package com.alessandragodoy.customerms.controller;
 import com.alessandragodoy.customerms.api.internal.InternalCustomerApi;
 import com.alessandragodoy.customerms.dto.CustomerValidationResponseDTO;
 import com.alessandragodoy.customerms.service.ICustomerService;
+import io.swagger.v3.oas.annotations.Hidden;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequiredArgsConstructor
+@Hidden
 public class InternalCustomerController implements InternalCustomerApi {
 
 	private final ICustomerService customerService;

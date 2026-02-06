@@ -22,7 +22,7 @@ WORKDIR /app
 # Copy JAR from builder stage
 COPY --from=builder /build/target/*.jar app.jar
 
-# Memory optimization for EC2 t3.micro (256MB per service)
+# Memory optimization for container environments
 ENV JAVA_OPTS="-Xmx256m \
                -Xms128m \
                -XX:+UseSerialGC \
@@ -38,9 +38,9 @@ RUN addgroup -g 1001 -S appgroup && \
 
 USER appuser
 
-EXPOSE 8085
+EXPOSE 8080
 
 HEALTHCHECK --interval=30s --timeout=3s --start-period=60s --retries=3 \
-  CMD wget --quiet --tries=1 --spider http://localhost:8085/actuator/health || exit 1
+  CMD wget --quiet --tries=1 --spider http://localhost:8080/actuator/health || exit 1
 
 ENTRYPOINT ["sh", "-c", "java $JAVA_OPTS -jar app.jar"]
